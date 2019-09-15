@@ -1,0 +1,1 @@
+Allows a user to quickly import media into Foundry VTT. 
