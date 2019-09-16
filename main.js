@@ -1,4 +1,4 @@
-var DEBUG = false;
+var DEBUG = true;
 
 
 //Pass a path to get the most recent directory
@@ -6,8 +6,12 @@ function _getBaseName(path){
     return path.split('/').reverse()[0];
 }
 
-function _convertSpacesToDashes(name){
-    return name.replace(/\s+/g, '-').toLowerCase();
+function _convertToUserFriendly(name){
+     name = name.replace(/(%20)+/g, '-').toLowerCase();
+     name = name.split(/(.mp3|.mp4|.wav)+/g)[0];
+     if(DEBUG)
+        console.log(`Converting playlist name to eliminate spaces and extension: ${name}.`);
+     return name;
 }
 
 
@@ -44,7 +48,7 @@ async function getItemsFromDir(path, playlistName){
     game.socket.emit("getFiles", path, {}, async function(resp){
         let localFiles = resp.files;
         for(var i = 0, len = localFiles.length; i < len; i++){
-            let trackName = await _convertSpacesToDashes(_getBaseName(localFiles[i]));
+            let trackName = await _convertToUserFriendly(_getBaseName(localFiles[i]));
             if(DEBUG)
                 console.log(`Audio Importer: Adding audio track: ${trackName}`);
             
