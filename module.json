@@ -1,0 +1,23 @@
+{
+    "name": "playlist-importer",
+    "title": "A quicker playlist importer",
+    "description": "A simple module designed to speed up playlist set ups.",
+    "version": "0.0.0",
+    "author": "Jacob McAuley",
+    "languages": {
+        "en": "lang/en.json",
+        "de": "lang/de.json"
+    },
+    "systems": [
+        "dnd5e"
+    ],
+    "scripts": [
+        "./main.js"
+    ],
+    "styles": [
+        "./css/styles.css"
+    ],
+    "url": "https://github.com/JacobMcAuley/playlist_import",
+    "manifest": "",
+    "download": ""
+}
