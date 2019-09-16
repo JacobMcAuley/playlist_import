@@ -6,6 +6,11 @@ function _getBaseName(path){
     return path.split('/').reverse()[0];
 }
 
+function _convertSpacesToDashes(name){
+    return name.replace(/\s+/g, '-').toLowerCase();
+}
+
+
 function beginPlaylistImport(path){
     game.socket.emit("getFiles", path, {}, resp => {
         let localDirs = resp.dirs;
@@ -36,15 +41,14 @@ async function generatePlaylist(playlistName){
 async function getItemsFromDir(path, playlistName){
     await generatePlaylist(playlistName);
     let playlist = game.playlists.entities.find(p => p.name === playlistName);
-    game.socket.emit("getFiles", path, {}, resp => {
+    game.socket.emit("getFiles", path, {}, async function(resp){
         let localFiles = resp.files;
+        for(var i = 0, len = localFiles.length; i < len; i++){
+            let trackName = await _convertSpacesToDashes(_getBaseName(localFiles[i]));
+            if(DEBUG)
+                console.log(`Audio Importer: Adding audio track: ${trackName}`);
+            
+            await playlist.createSound({name: trackName, path: localFiles[i], loop: true, volume: 0.5}, true);      
+        }
     });
-    for(var i = 0, len = localFiles.length; i < len; i++){
-        let trackName = _getBaseName(localFiles[i]);
-
-        if(DEBUG)
-            console.log(`Audio Importer: Adding audio track: ${trackName}`);
-        
-        playlist.createSound({name: trackName, path: localFiles[i], loop: true, volume: 0.5}, true);      
-    }
 }
