@@ -37,14 +37,14 @@ async function getItemsFromDir(path, playlistName){
     await generatePlaylist(playlistName);
     let playlist = game.playlists.entities.find(p => p.name === playlistName);
     game.socket.emit("getFiles", path, {}, resp => {
-        localFiles = resp.files;
-        for(var i = 0, len = localFiles.length; i < len; i++){
-            let trackName = _getBaseName(localFiles[i]);
-
-            if(DEBUG)
-                console.log(`Audio Importer: Adding audio track: ${trackName}`);
-            
-            playlist.createSound({name: trackName, path: localFiles[i], loop: true, volume: 0.5}, true);      
-        }
+        let localFiles = resp.files;
     });
+    for(var i = 0, len = localFiles.length; i < len; i++){
+        let trackName = _getBaseName(localFiles[i]);
+
+        if(DEBUG)
+            console.log(`Audio Importer: Adding audio track: ${trackName}`);
+        
+        playlist.createSound({name: trackName, path: localFiles[i], loop: true, volume: 0.5}, true);      
+    }
 }
