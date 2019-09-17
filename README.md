@@ -20,7 +20,7 @@ NOTE:
 
 To install playlist-import, do the following:
 
-1. [Download the zip file]()
+1. [Download the zip file](https://github.com/JacobMcAuley/playlist_import/blob/master/playlist_import.zip)
 2. Extract the folder to your 'public/modules' in Foundry VTT.
 3. Reload your application.
 
