@@ -21,9 +21,23 @@ let playlistPrompt = new Dialog({
       callback: () => console.log("Playlist-Importer: Canceled")
      }
     },
-    default: "two",
+    default: "Cancel",
     close: () => console.log("Playlist-Importer: Prompt Closed")
-   });
+});
+
+let playlistComplete = new Dialog({
+    title: "Operation Completed",
+    content: "<p>Playlist-Importer has completed its task.</p>",
+    buttons: {
+     one: {
+      icon: '<i class="fas fa-check"></i>',
+      label: "Close",
+      callback: () => console.log("Close")
+     }
+    },
+    default: "Ack",
+    close: () => console.log("Playlist-Importer: Prompt Closed")
+});
 
 
 
@@ -35,11 +49,27 @@ let playlistPrompt = new Dialog({
 /**
  * Grabs the most recent folder name. Used in playlist naming.
  * @private
- * @param {string} path 
+ * @param {string} filePath 
  */
 
-function _getBaseName(path){
-    return path.split('/').reverse()[0];
+function _getBaseName(filePath){
+    return filePath.split('/').reverse()[0];
+}
+
+/**
+ * Validates the audio extension to be of type mp3, mp4, wav, ogg.
+ * @private
+ * @param {string} fileName 
+ */
+function _validateFileType(fileName){
+    let ext = fileName.split('.').pop();
+    if(DEBUG)
+        console.log(`Playlist-Importer: Extension is determined to be (${ext}).`)
+
+    if(ext.match(/(mp3|mp4|wav|ogg)+/g))
+        return true;
+    
+    return false;
 }
 
 /**
@@ -49,8 +79,8 @@ function _getBaseName(path){
  */
 
 function _convertToUserFriendly(name){
-     name = name.replace(/(%20)+/g, '-').toLowerCase();
-     name = name.split(/(.mp3|.mp4|.wav)+/g)[0];
+     name = name.replace(/(%20)+/g, ' ').toLowerCase();
+     name = name.split(/(.mp3|.mp4|.wav|.ogg)+/g)[0];
      if(DEBUG)
         console.log(`Playlist-Importer: Converting playlist name to eliminate spaces and extension: ${name}.`);
      return name;
@@ -93,11 +123,19 @@ async function getItemsFromDir(path, playlistName){
     game.socket.emit("getFiles", path, {}, async function(resp){
         let localFiles = resp.files;
         for(var i = 0, len = localFiles.length; i < len; i++){
-            let trackName = await _convertToUserFriendly(_getBaseName(localFiles[i]));
-            if(DEBUG)
-                console.log(`Playlist-Importer: Adding audio track: ${trackName}`);
-            
-            await playlist.createSound({name: trackName, path: localFiles[i], loop: true, volume: 0.5}, true);      
+
+            if(_validateFileType(localFiles[i])){
+                let trackName = _convertToUserFriendly(_getBaseName(localFiles[i]));
+
+                if(DEBUG)
+                    console.log(`Playlist-Importer: Adding audio track: ${trackName}`);
+                
+                await playlist.createSound({name: trackName, path: localFiles[i], loop: true, volume: 0.5}, true);      
+            }
+            else{
+                if(DEBUG)
+                    console.log(`Playlist-Importer: Determined ${localFiles[i]} to be of an invalid ext. If you believe this to be an error contact me on Discord.`)
+            }
         }
     });
 }
@@ -115,6 +153,7 @@ function beginPlaylistImport(path){
             getItemsFromDir(localDirs[i], _getBaseName(localDirs[i]));
         }
     });
+    playlistComplete.render(true);
 }
 
 
