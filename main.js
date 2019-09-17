@@ -1,5 +1,23 @@
 var DEBUG = true;
 
+let playlistPrompt = new Dialog({
+    title: "Import from music directory?",
+    content: "<p>Select either to import or cancel</p>",
+    buttons: {
+     one: {
+      icon: '<i class="fas fa-check"></i>',
+      label: "Begin Import",
+      callback: () => beginPlaylistImport("music")
+     },
+     two: {
+      icon: '<i class="fas fa-times"></i>',
+      label: "Cancel",
+      callback: () => console.log("Playlist-Importer: Canceled")
+     }
+    },
+    default: "two",
+    close: () => console.log("Playlist-Importer: Prompt Closed")
+   });
 
 //Pass a path to get the most recent directory
 function _getBaseName(path){
@@ -10,7 +28,7 @@ function _convertToUserFriendly(name){
      name = name.replace(/(%20)+/g, '-').toLowerCase();
      name = name.split(/(.mp3|.mp4|.wav)+/g)[0];
      if(DEBUG)
-        console.log(`Converting playlist name to eliminate spaces and extension: ${name}.`);
+        console.log(`Playlist-Importer: Converting playlist name to eliminate spaces and extension: ${name}.`);
      return name;
 }
 
@@ -38,7 +56,7 @@ async function generatePlaylist(playlistName){
         "playing": false
       });
       if(DEBUG)
-        console.log(`Audio Importer: Successfully created playlist: ${playlistName}`);
+        console.log(`Playlist-Importer: Successfully created playlist: ${playlistName}`);
 }
 
 
@@ -50,9 +68,22 @@ async function getItemsFromDir(path, playlistName){
         for(var i = 0, len = localFiles.length; i < len; i++){
             let trackName = await _convertToUserFriendly(_getBaseName(localFiles[i]));
             if(DEBUG)
-                console.log(`Audio Importer: Adding audio track: ${trackName}`);
+                console.log(`Playlist-Importer: Adding audio track: ${trackName}`);
             
             await playlist.createSound({name: trackName, path: localFiles[i], loop: true, volume: 0.5}, true);      
         }
     });
 }
+
+
+Hooks.on('renderPlaylistDirectory', (app, html, data) => {
+    if(DEBUG)
+        console.log("Playlist-Importer: Rendering playlist option");  
+    
+    const importButton = $('<button  style="min-width: 96%; margin: 10px 6px;">Playlist Import</button>');
+    
+    html.find('.directory-footer').append(importButton);
+    importButton.click(ev => {
+        playlistPrompt.render(true);
+    });
+});
