@@ -7,9 +7,6 @@
     "scripts": [
         "./main.js"
     ],
-    "styles": [
-        "./css/styles.css"
-    ],
     "url": "https://github.com/JacobMcAuley/playlist_import",
     "manifest": "",
     "download": ""

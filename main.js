@@ -1,4 +1,10 @@
-var DEBUG = true;
+/*  --------------------------------------  */
+/*            Global settings               */
+/*  --------------------------------------  */
+
+var DEBUG = true;  // Enable to see logs
+var IMPORTFOLDER = "music" // Change music to folder you would like to import from.
+
 
 let playlistPrompt = new Dialog({
     title: "Import from music directory?",
@@ -7,7 +13,7 @@ let playlistPrompt = new Dialog({
      one: {
       icon: '<i class="fas fa-check"></i>',
       label: "Begin Import",
-      callback: () => beginPlaylistImport("music")
+      callback: () => beginPlaylistImport(IMPORTFOLDER)
      },
      two: {
       icon: '<i class="fas fa-times"></i>',
@@ -19,10 +25,28 @@ let playlistPrompt = new Dialog({
     close: () => console.log("Playlist-Importer: Prompt Closed")
    });
 
-//Pass a path to get the most recent directory
+
+
+/*  --------------------------------------  */
+/*           Helper functions               */
+/*  --------------------------------------  */
+
+
+/**
+ * Grabs the most recent folder name. Used in playlist naming.
+ * @private
+ * @param {string} path 
+ */
+
 function _getBaseName(path){
     return path.split('/').reverse()[0];
 }
+
+/**
+ * Formats the filenames of songs to something more readable. You can add additional REGEX for other audio extensions.
+ * @private
+ * @param {string} name 
+ */
 
 function _convertToUserFriendly(name){
      name = name.replace(/(%20)+/g, '-').toLowerCase();
@@ -32,17 +56,10 @@ function _convertToUserFriendly(name){
      return name;
 }
 
-
-function beginPlaylistImport(path){
-    game.socket.emit("getFiles", path, {}, resp => {
-        let localDirs = resp.dirs;
-        for(var i = 0, len = localDirs.length; i< len; i++){
-            if(DEBUG)
-                console.log(localDirs[i]);  
-            getItemsFromDir(localDirs[i], _getBaseName(localDirs[i]));
-        }
-    });
-}
+/**
+ * Waits for the creation of a playlist in a seperate function for readability.
+ * @param {string} playlistName 
+ */
 
 async function generatePlaylist(playlistName){
     await Playlist.create(  {
@@ -60,6 +77,16 @@ async function generatePlaylist(playlistName){
 }
 
 
+/*  --------------------------------------  */
+/*           Creation functions             */
+/*  --------------------------------------  */
+
+/**
+ * Given a path and a playlist name, it will search the path for all files and attempt to add them the created playlist using playlistName.
+ * @param {string} path 
+ * @param {string} playlistName 
+ */
+
 async function getItemsFromDir(path, playlistName){
     await generatePlaylist(playlistName);
     let playlist = game.playlists.entities.find(p => p.name === playlistName);
@@ -75,6 +102,29 @@ async function getItemsFromDir(path, playlistName){
     });
 }
 
+/**
+ * Called by the dialogue to begin the importation process. This is the function that starts the process.
+ * @param {string} path 
+ */
+function beginPlaylistImport(path){
+    game.socket.emit("getFiles", path, {}, resp => {
+        let localDirs = resp.dirs;
+        for(var i = 0, len = localDirs.length; i< len; i++){
+            if(DEBUG)
+                console.log(localDirs[i]);  
+            getItemsFromDir(localDirs[i], _getBaseName(localDirs[i]));
+        }
+    });
+}
+
+
+/*  --------------------------------------  */
+/*                 Hooks                    */
+/*  --------------------------------------  */
+
+/**
+ * Appends a button onto the playlist to import songs.
+ */
 
 Hooks.on('renderPlaylistDirectory', (app, html, data) => {
     if(DEBUG)

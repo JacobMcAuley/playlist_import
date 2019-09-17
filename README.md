@@ -12,6 +12,7 @@ If you have a large music library, importing song by song is tedious at best; th
 - Tested on FVTT v0.3.7
 
 NOTE:
+1. There is no error checking on the file types during the search. It will be added later, but for now use only audio files or expect unexpected results.
 1. Using spaces in folder names will result in importation issues. Spaces in filenames should be okay.
 1. I've tested this on over 11.4GB of music files all in one import. It will work on sizes this large; however, it appears to cause sluggish reactions when trying to select a song to play. Likely there are far too many songs in this case. TLDR: Import an excessive amounts of songs at your own possible speed costs.
 
