@@ -1,12 +1,12 @@
 # Playlist importer 
 
-This module aims to simplify the process of adding multiple music tracks to Foundry VTT in a timely manner.
+This module aims to simplify the process of adding multiple music tracks to Foundry VTT, doing so in a timely manner.
 
 ![example](example.gif)
 
 ### Reasoning
 
-If you have a large music library, importing song by song is tedious at best; therefore, a mass import function would cut down time on adding your files in.
+If you have a large music library, importing song by song is tedious at best; therefore, a mass import function would cut down on the time it takes to add your files.
 
 ### FVTT Version
 - Tested on FVTT v0.3.7
