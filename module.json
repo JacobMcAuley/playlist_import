@@ -8,6 +8,6 @@
         "./main.js"
     ],
     "url": "https://github.com/JacobMcAuley/playlist_import",
-    "manifest": "https://github.com/JacobMcAuley/playlist_import/blob/master/module.json",
-    "download": "https://github.com/JacobMcAuley/playlist_import/blob/master/playlist_import.zip"
+    "manifest": "https://raw.githubusercontent.com/JacobMcAuley/playlist_import/master/module.json",
+    "download": "https://github.com/JacobMcAuley/playlist_import/raw/master/playlist_import.zip"
 }
