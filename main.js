@@ -5,6 +5,9 @@
 var DEBUG = true;  // Enable to see logs
 var IMPORTFOLDER = "music" // Change music to folder you would like to import from.
 
+/*  --------------------------------------  */
+/*                 Prompts                  */
+/*  --------------------------------------  */
 
 let playlistPrompt = new Dialog({
     title: "Import from music directory?",
@@ -92,18 +95,25 @@ function _convertToUserFriendly(name){
  */
 
 async function generatePlaylist(playlistName){
-    await Playlist.create(  {
-        "name": playlistName,
-        "permission": {
-          "default": 0
-        },
-        "flags": {},
-        "sounds": [],
-        "mode": 0,
-        "playing": false
-      });
-      if(DEBUG)
-        console.log(`Playlist-Importer: Successfully created playlist: ${playlistName}`);
+    try{
+        await Playlist.create(  {
+            "name": playlistName,
+            "permission": {
+              "default": 0
+            },
+            "flags": {},
+            "sounds": [],
+            "mode": 0,
+            "playing": false
+          });
+          if(DEBUG)
+            console.log(`Playlist-Importer: Successfully created playlist: ${playlistName}`);
+            return true;
+    }
+    catch(error){
+        return false;
+    }
+    
 }
 
 
@@ -117,26 +127,27 @@ async function generatePlaylist(playlistName){
  * @param {string} playlistName 
  */
 
-async function getItemsFromDir(path, playlistName){
-    await generatePlaylist(playlistName);
+function getItemsFromDir(path, playlistName){
     let playlist = game.playlists.entities.find(p => p.name === playlistName);
-    game.socket.emit("getFiles", path, {}, async function(resp){
-        let localFiles = resp.files;
-        for(var i = 0, len = localFiles.length; i < len; i++){
+    return new Promise(async (resolve, reject) => {
+        game.socket.emit("getFiles", path, {}, async function(resp){
 
-            if(_validateFileType(localFiles[i])){
-                let trackName = _convertToUserFriendly(_getBaseName(localFiles[i]));
+            let localFiles = resp.files;
 
-                if(DEBUG)
-                    console.log(`Playlist-Importer: Adding audio track: ${trackName}`);
-                
-                await playlist.createSound({name: trackName, path: localFiles[i], loop: true, volume: 0.5}, true);      
-            }
-            else{
-                if(DEBUG)
-                    console.log(`Playlist-Importer: Determined ${localFiles[i]} to be of an invalid ext. If you believe this to be an error contact me on Discord.`)
-            }
-        }
+            for(const fileName of localFiles){
+                const valid = await _validateFileType(fileName);
+                if(valid){
+                    let trackName = _convertToUserFriendly(_getBaseName(fileName));
+                    await playlist.createSound({name: trackName, path: fileName, loop: true, volume: 0.5}, true);
+                }
+                else{
+                    if(DEBUG)
+                        console.log(`Playlist-Importer: Determined ${fileName} to be of an invalid ext. If you believe this to be an error contact me on Discord.`)
+                    return false;
+                }
+            } 
+            resolve(true);
+        });
     });
 }
 
@@ -144,16 +155,24 @@ async function getItemsFromDir(path, playlistName){
  * Called by the dialogue to begin the importation process. This is the function that starts the process.
  * @param {string} path 
  */
-function beginPlaylistImport(path){
-    game.socket.emit("getFiles", path, {}, resp => {
+async function beginPlaylistImport(path){
+    game.socket.emit("getFiles", path, {}, async resp => {
         let localDirs = resp.dirs;
-        for(var i = 0, len = localDirs.length; i< len; i++){
+        
+        for(const dirName of localDirs){
+            let success = await generatePlaylist(_getBaseName(dirName));
             if(DEBUG)
-                console.log(localDirs[i]);  
-            getItemsFromDir(localDirs[i], _getBaseName(localDirs[i]));
+                console.log(`TT: ${dirName}: ${success} on creating playlists`);
         }
+
+        for(const dirName of localDirs){
+            await getItemsFromDir(dirName, _getBaseName(dirName));   
+        }
+
+        if(DEBUG)
+            console.log("Playlist-Importer: Operation Completed. Thank you!");
+        playlistComplete.render(true);
     });
-    playlistComplete.render(true);
 }
 
 
@@ -166,9 +185,6 @@ function beginPlaylistImport(path){
  */
 
 Hooks.on('renderPlaylistDirectory', (app, html, data) => {
-    if(DEBUG)
-        console.log("Playlist-Importer: Rendering playlist option");  
-    
     const importButton = $('<button  style="min-width: 96%; margin: 10px 6px;">Playlist Import</button>');
     
     html.find('.directory-footer').append(importButton);
