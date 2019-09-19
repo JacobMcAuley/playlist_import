@@ -89,31 +89,41 @@ function _convertToUserFriendly(name){
      return name;
 }
 
+
 /**
  * Waits for the creation of a playlist in a seperate function for readability.
  * @param {string} playlistName 
  */
 
-async function generatePlaylist(playlistName){
-    try{
-        await Playlist.create(  {
-            "name": playlistName,
-            "permission": {
-              "default": 0
-            },
-            "flags": {},
-            "sounds": [],
-            "mode": 0,
-            "playing": false
-          });
-          if(DEBUG)
-            console.log(`Playlist-Importer: Successfully created playlist: ${playlistName}`);
-            return true;
-    }
-    catch(error){
-        return false;
-    }
-    
+function generatePlaylist(playlistName){
+    return new Promise(async (resolve, reject) => {
+        const test = await game.playlists.entities.find(p => p.name === playlistName);
+
+        console.log(test);
+
+        if(test == null){
+            try{
+                await Playlist.create(  {
+                    "name": playlistName,
+                    "permission": {
+                    "default": 0
+                    },
+                    "flags": {},
+                    "sounds": [],
+                    "mode": 0,
+                    "playing": false
+                });
+                if(DEBUG)
+                    console.log(`Playlist-Importer: Successfully created playlist: ${playlistName}`);
+                    resolve(true);
+            }
+            catch(error){
+                reject(false);
+            }
+        
+        }
+        resolve(false);
+    })
 }
 
 
