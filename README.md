@@ -13,6 +13,7 @@ If you have a large music library, importing song by song is tedious at best; th
 
 NOTE:
 1. Currently only .mp3, .mp4, .ogg, and .wav files are imported. All other types are excluded. 
+1. If used twice in a row, duplicate songs will be added. I recommend doing it in bulk and deleting all playlists and reimporting for adding new songs. 
 1. Using spaces in **folder** names will result in importation issues. Spaces in *file names* should be okay.
 1. I've tested this on over 11.4GB of music files all in one import, so far as my tests indicates, everything seems to work well! However, importing mass amounts of songs while players are connected seems to result in sluggish playback. I recommend importing while you are alone.
 
