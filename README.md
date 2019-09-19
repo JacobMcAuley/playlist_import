@@ -4,6 +4,7 @@ This module aims to simplify the process of adding multiple music tracks to Foun
 
 ![example](example.gif)
 
+See an additional sample under long-example.gif!
 ### Reasoning
 
 If you have a large music library, importing song by song is tedious at best; therefore, a mass import function would cut down on the time it takes to add your files.
