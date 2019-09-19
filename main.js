@@ -143,7 +143,6 @@ function getItemsFromDir(path, playlistName){
                 else{
                     if(DEBUG)
                         console.log(`Playlist-Importer: Determined ${fileName} to be of an invalid ext. If you believe this to be an error contact me on Discord.`)
-                    return false;
                 }
             } 
             resolve(true);
