@@ -106,36 +106,18 @@ class PlaylistImporter{
                 let localFiles = resp.files;
 
                 for(const fileName of localFiles){
-                    const valid = await _validateFileType(fileName);
+                    const valid = await this._validateFileType(fileName);
                     if(valid){
-                        let trackName = _convertToUserFriendly(_getBaseName(fileName));
+                        let trackName = this._convertToUserFriendly(this._getBaseName(fileName));
                         await playlist.createSound({name: trackName, path: fileName, loop: true, volume: 0.5}, true);
-                   
-playlistPrompt = new Dialog({
-    title: "Import from music directory?",
-    content: "<p>Select either to import or cancel</p>",
-    buttons: {
-    one: {
-    icon: '<i class="fas fa-check"></i>',
-    label: "Begin Import",
-    callback: () => beginPlaylistImport(IMPORTFOLDER)
-    },
-    two: {
-    icon: '<i class="fas fa-times"></i>',
-    label: "Cancel",
-    callback: () => console.log("Playlist-Importer: Canceled")
-    }
-    },
-    default: "Cancel",
-    close: () => console.log("Playlist-Importer: Prompt Closed")
-}); }
+                    }
                     else{
                         if(DEBUG)
                             console.log(`Playlist-Importer: Determined ${fileName} to be of an invalid ext. If you believe this to be an error contact me on Discord.`)
                     }
                 } 
                 resolve(true);
-            });
+            }.bind(this));
         });
     }
 
@@ -171,7 +153,7 @@ playlistPrompt = new Dialog({
             one: {
             icon: '<i class="fas fa-check"></i>',
             label: "Begin Import",
-            callback: () => beginPlaylistImport(IMPORTFOLDER)
+            callback: () => this.beginPlaylistImport(IMPORTFOLDER)
             },
             two: {
             icon: '<i class="fas fa-times"></i>',
@@ -195,18 +177,18 @@ playlistPrompt = new Dialog({
             let localDirs = resp.dirs;
             
             for(const dirName of localDirs){
-                let success = await _generatePlaylist(_getBaseName(dirName));
+                let success = await this._generatePlaylist(this._getBaseName(dirName));
                 if(DEBUG)
                     console.log(`TT: ${dirName}: ${success} on creating playlists`);
             }
 
             for(const dirName of localDirs){
-                await _getItemsFromDir(dirName, _getBaseName(dirName));   
+                await this._getItemsFromDir(dirName, this._getBaseName(dirName));   
             }
 
             if(DEBUG)
                 console.log("Playlist-Importer: Operation Completed. Thank you!");
-            playlistCompletePrompt();
+            this._playlistCompletePrompt();
         });
     }
 }
