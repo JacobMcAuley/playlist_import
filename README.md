@@ -2,7 +2,7 @@
 
 This module aims to simplify the process of adding multiple music tracks to Foundry VTT, allowing for bulk importation of songs.
 
-![example](example.gif)
+![example](imgs/example.gif)
 
 See an additional sample under long-example.gif!
 ### Reasoning
@@ -48,7 +48,7 @@ Auto-Installation Instructions:
 ### Example Structure 
 
 ```
-    | /Foundry/resources/app/public
+    | /FoundryVTT/Data
     | 
     |---> /music
     |     |
