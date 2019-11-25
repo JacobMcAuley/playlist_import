@@ -2,7 +2,7 @@
 /*            Global settings               */
 /*  --------------------------------------  */
 
-var DEBUG = true;  // Enable to see logs
+var DEBUG = false;  // Enable to see logs
 var IMPORTFOLDER = "music" // Change music to folder you would like to import from.
 
 /*  --------------------------------------  */
@@ -101,10 +101,8 @@ class PlaylistImporter{
     _getItemsFromDir(path, playlistName){
         let playlist = game.playlists.entities.find(p => p.name === playlistName);
         return new Promise(async (resolve, reject) => {
-            game.socket.emit("getFiles", path, {}, async function(resp){
-
+            FilePicker.browse("user", path).then(async function(resp){
                 let localFiles = resp.files;
-
                 for(const fileName of localFiles){
                     const valid = await this._validateFileType(fileName);
                     if(valid){
@@ -173,9 +171,8 @@ class PlaylistImporter{
      * @param {string} path 
      */
     async beginPlaylistImport(path){
-        game.socket.emit("getFiles", path, {}, async resp => {
-            let localDirs = resp.dirs;
-            
+        FilePicker.browse("user", path).then(async resp => {
+            let localDirs = resp.dirs; 
             for(const dirName of localDirs){
                 let success = await this._generatePlaylist(this._getBaseName(dirName));
                 if(DEBUG)
@@ -189,6 +186,6 @@ class PlaylistImporter{
             if(DEBUG)
                 console.log("Playlist-Importer: Operation Completed. Thank you!");
             this._playlistCompletePrompt();
-        });
+        })
     }
 }
