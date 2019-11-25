@@ -10,5 +10,6 @@
     ],
     "url": "https://github.com/JacobMcAuley/playlist_import",
     "manifest": "https://raw.githubusercontent.com/JacobMcAuley/playlist_import/master/module.json",
-    "download": "https://github.com/JacobMcAuley/playlist_import/raw/master/playlist_import.zip"
+    "download": "https://github.com/JacobMcAuley/playlist_import/raw/master/playlist_import.zip",
+    "minimumCoreVersion": "0.4.1"
 }
