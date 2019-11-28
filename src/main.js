@@ -1,15 +1,15 @@
 /*  --------------------------------------  */
 /*            Global settings               */
 /*  --------------------------------------  */
-
-var DEBUG = false;  // Enable to see logs
 var IMPORTFOLDER = "music" // Change music to folder you would like to import from.
 
 /*  --------------------------------------  */
 /*                 Prompts                  */
 /*  --------------------------------------  */
 class PlaylistImporter{
-    constructor(){}
+    constructor(){
+        this.DEBUG = false; // Enable to see logs
+    }
     /*  --------------------------------------  */
     /*           Helper functions               */
     /*  --------------------------------------  */
@@ -33,7 +33,7 @@ class PlaylistImporter{
 
     _validateFileType(fileName){
         let ext = fileName.split('.').pop();
-        if(DEBUG)
+        if(this.DEBUG)
             console.log(`Playlist-Importer: Extension is determined to be (${ext}).`)
 
         if(ext.match(/(mp3|mp4|wav|ogg)+/g))
@@ -50,24 +50,21 @@ class PlaylistImporter{
     _convertToUserFriendly(name){
         name = name.replace(/(%20)+/g, ' ').toLowerCase();
         name = name.split(/(.mp3|.mp4|.wav|.ogg)+/g)[0];
-        if(DEBUG)
+        if(this.DEBUG)
         console.log(`Playlist-Importer: Converting playlist name to eliminate spaces and extension: ${name}.`);
         return name;
     }
 
 
     /**
-     * Waits for the creation of a playlist in a seperate function for readability.
+     * Waits for the creation of a playlist in a separate function for readability.
      * @param {string} playlistName 
      */
 
     _generatePlaylist(playlistName){
         return new Promise(async (resolve, reject) => {
-            const test = await game.playlists.entities.find(p => p.name === playlistName);
-
-            console.log(test);
-
-            if(test == null){
+            const playlistExists = await game.playlists.entities.find(p => p.name === playlistName);
+            if(playlistExists == null){
                 try{
                     await Playlist.create(  {
                         "name": playlistName,
@@ -79,7 +76,7 @@ class PlaylistImporter{
                         "mode": 0,
                         "playing": false
                     });
-                    if(DEBUG)
+                    if(this.DEBUG)
                         console.log(`Playlist-Importer: Successfully created playlist: ${playlistName}`);
                         resolve(true);
                 }
@@ -107,10 +104,19 @@ class PlaylistImporter{
                     const valid = await this._validateFileType(fileName);
                     if(valid){
                         let trackName = this._convertToUserFriendly(this._getBaseName(fileName));
-                        await playlist.createSound({name: trackName, path: fileName, loop: true, volume: 0.5}, true);
+                        let currentList = await game.settings.get('playlist_import', 'songs');
+
+                        if(currentList[trackName] != true){
+                            currentList[trackName] = true;
+                            if(this.DEBUG)
+                                console.log(`PL : It doesn't! ${trackName}`)
+                            await game.settings.set('playlist_import', 'songs', currentList);     
+                            await playlist.createSound({name: trackName, path: fileName, loop: true, volume: 0.5}, true);
+                        }  
+
                     }
                     else{
-                        if(DEBUG)
+                        if(this.DEBUG)
                             console.log(`Playlist-Importer: Determined ${fileName} to be of an invalid ext. If you believe this to be an error contact me on Discord.`)
                     }
                 } 
@@ -171,11 +177,12 @@ class PlaylistImporter{
      * @param {string} path 
      */
     async beginPlaylistImport(path){
+        console.time()
         FilePicker.browse("user", path).then(async resp => {
             let localDirs = resp.dirs; 
             for(const dirName of localDirs){
                 let success = await this._generatePlaylist(this._getBaseName(dirName));
-                if(DEBUG)
+                if(this.DEBUG)
                     console.log(`TT: ${dirName}: ${success} on creating playlists`);
             }
 
@@ -183,9 +190,11 @@ class PlaylistImporter{
                 await this._getItemsFromDir(dirName, this._getBaseName(dirName));   
             }
 
-            if(DEBUG)
+            if(this.DEBUG)
                 console.log("Playlist-Importer: Operation Completed. Thank you!");
             this._playlistCompletePrompt();
+            console.timeEnd();
         })
+        
     }
 }
