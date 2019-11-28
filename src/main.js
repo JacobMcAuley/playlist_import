@@ -152,9 +152,37 @@ class PlaylistImporter{
         playlistComplete.render(true);
     }
 
+    /**
+     * A helper function designed to clear the stored history of songs
+     */
+    _clearSongHistory(){
+        game.settings.set('playlist_import', 'songs', {}); 
+    }
+
 /*  --------------------------------------  */
 /*                 Interface                */
 /*  --------------------------------------  */
+
+    clearMemoryInterface(){
+        let clearMemoryPrompt = new Dialog({
+            title: "WARNING: IRREVERSIBLE",
+            content: "<p>Would you like to reset the stored songs table? This will make it so Playlist-importer believes that all songs are new.</p>",
+            buttons: {
+            one: {
+            label: "*WARNING: Irreversible* CLEAR TABLE",
+            callback: () => this._clearSongHistory()
+            },
+            two: {
+            label: "Cancel",
+            callback: () => console.log("Playlist-Importer: Canceled")
+            }
+            },
+            default: "Cancel",
+            close: () => console.log("Playlist-Importer: Prompt Closed")
+        });
+        clearMemoryPrompt.render(true);      
+    }
+
 
     playlistDirectoryInterface(){
         let playlistPrompt = new Dialog({
@@ -184,7 +212,6 @@ class PlaylistImporter{
      * @param {string} path 
      */
     async beginPlaylistImport(path){
-        console.time()
         FilePicker.browse("user", path).then(async resp => {
             let localDirs = resp.dirs; 
             for(const dirName of localDirs){
@@ -200,8 +227,6 @@ class PlaylistImporter{
             if(this.DEBUG)
                 console.log("Playlist-Importer: Operation Completed. Thank you!");
             this._playlistCompletePrompt();
-            console.timeEnd();
-        })
-        
+        }) 
     }
 }
