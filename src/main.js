@@ -96,6 +96,7 @@ class PlaylistImporter{
      */
 
     _getItemsFromDir(path, playlistName){
+        let dupCheck = game.settings.get('playlist_import', 'enableDuplicateChecking');
         let playlist = game.playlists.entities.find(p => p.name === playlistName);
         return new Promise(async (resolve, reject) => {
             FilePicker.browse("user", path).then(async function(resp){
@@ -105,15 +106,21 @@ class PlaylistImporter{
                     if(valid){
                         let trackName = this._convertToUserFriendly(this._getBaseName(fileName));
                         let currentList = await game.settings.get('playlist_import', 'songs');
-
-                        if(currentList[trackName] != true){
+                        
+                        if(dupCheck){
+                            if(currentList[trackName] != true){
+                                currentList[trackName] = true;
+                                if(this.DEBUG)
+                                    console.log(`Playlist-importer: Song ${trackName} not in list.`)
+                                await game.settings.set('playlist_import', 'songs', currentList);     
+                                await playlist.createSound({name: trackName, path: fileName, loop: true, volume: 0.5}, true);
+                            }  
+                        }
+                        else{   
                             currentList[trackName] = true;
-                            if(this.DEBUG)
-                                console.log(`PL : It doesn't! ${trackName}`)
-                            await game.settings.set('playlist_import', 'songs', currentList);     
-                            await playlist.createSound({name: trackName, path: fileName, loop: true, volume: 0.5}, true);
-                        }  
-
+                            await game.settings.set('playlist_import', 'songs', currentList);    
+                            await playlist.createSound({name: trackName, path: fileName, loop: true, volume: 0.5}, true);                            
+                        }
                     }
                     else{
                         if(this.DEBUG)
