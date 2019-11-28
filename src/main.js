@@ -1,14 +1,13 @@
 /*  --------------------------------------  */
-/*            Global settings               */
-/*  --------------------------------------  */
-var IMPORTFOLDER = "music" // Change music to folder you would like to import from.
-
-/*  --------------------------------------  */
 /*                 Prompts                  */
 /*  --------------------------------------  */
 class PlaylistImporter{
     constructor(){
-        this.DEBUG = false; // Enable to see logs
+        /*  --------------------------------------  */
+        /*            Global settings               */
+        /*  --------------------------------------  */
+        this.DEBUG = false;  // Enable to see logs
+        this.IMPORTFOLDER = "music"; // Change music to folder you would like to import from.
     }
     /*  --------------------------------------  */
     /*           Helper functions               */
@@ -192,7 +191,7 @@ class PlaylistImporter{
             one: {
             icon: '<i class="fas fa-check"></i>',
             label: "Begin Import",
-            callback: () => this.beginPlaylistImport(IMPORTFOLDER)
+            callback: () => this.beginPlaylistImport(this.IMPORTFOLDER)
             },
             two: {
             icon: '<i class="fas fa-times"></i>',

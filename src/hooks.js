@@ -15,6 +15,10 @@ Hooks.on('renderPlaylistDirectory', (app, html, data) => {
     });
 });
 
+/**
+ * Appends a button onto the settings to clear playlist "Hashtable" memory.
+ */
+
 Hooks.on('renderSettings', (app, html) => {
     const importButton = $('<button>Playlist-Importer Memory Clear</button>');
     html.find("button[data-action='setup']").after(importButton);
@@ -23,7 +27,9 @@ Hooks.on('renderSettings', (app, html) => {
     });
 });
 
-
+/**
+ * Initializes songs "Hashtable" if not already
+ */
 Hooks.on('canvasInit', () =>{
     game.settings.register('playlist_import', 'songs', {
         scope: 'world',
@@ -32,6 +38,9 @@ Hooks.on('canvasInit', () =>{
     });  
 });
 
+/**
+ * Sets up module settings.
+ */
 Hooks.on('init', () => {
     game.settings.register(PLAYLIST_IMPORTER_CONFIG.module, PLAYLIST_IMPORTER_CONFIG.key, PLAYLIST_IMPORTER_CONFIG.settings);
 });
