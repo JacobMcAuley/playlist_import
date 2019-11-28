@@ -15,3 +15,18 @@ Hooks.on('renderPlaylistDirectory', (app, html, data) => {
         playlistImporter.playlistDirectoryInterface();
     });
 });
+
+
+Hooks.on('canvasInit', () =>{
+    game.settings.register('playlist_import', 'songs', {
+        scope: 'world',
+        default : {},
+        type: Object
+    });
+    currentList = game.settings.get('playlist_import', 'songs');
+    //game.settings.set('playlist_import', 'songs', {});   
+});
+
+Hooks.on('init', () => {
+    //game.settings.register(PLAYLIST_IMPORTER_CONFIG.module, PLAYLIST_IMPORTER_CONFIG.key, PLAYLIST_IMPORTER_CONFIG.settings);
+});
