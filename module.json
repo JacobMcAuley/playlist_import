@@ -6,7 +6,8 @@
     "author": "Jacob McAuley",
     "scripts": [
         "./src/main.js",
-        "./src/hooks.js"
+        "./src/hooks.js",
+        "./config/config.js"
     ],
     "url": "https://github.com/JacobMcAuley/playlist_import",
     "manifest": "https://raw.githubusercontent.com/JacobMcAuley/playlist_import/master/module.json",
