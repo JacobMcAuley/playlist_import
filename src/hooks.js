@@ -30,7 +30,7 @@ Hooks.on('renderSettings', (app, html) => {
 /**
  * Initializes songs "Hashtable" if not already
  */
-Hooks.on('canvasInit', () =>{
+Hooks.on('ready', () =>{
     game.settings.register('playlist_import', 'songs', {
         scope: 'world',
         default : {},
