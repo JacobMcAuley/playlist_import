@@ -112,13 +112,13 @@ class PlaylistImporter{
                                 if(this.DEBUG)
                                     console.log(`Playlist-importer: Song ${trackName} not in list.`)
                                 await game.settings.set('playlist_import', 'songs', currentList);     
-                                await playlist.createSound({name: trackName, path: fileName, loop: true, volume: 0.5}, true);
+                                await playlist.createEmbeddedEntity("PlaylistSound", {name: trackName, path: fileName, repeat: true, lvolume: 0.5}, {});
                             }  
                         }
                         else{   
                             currentList[trackName] = true;
                             await game.settings.set('playlist_import', 'songs', currentList);    
-                            await playlist.createSound({name: trackName, path: fileName, loop: true, volume: 0.5}, true);                            
+                            await playlist.createEmbeddedEntity("PlaylistSound", {name: trackName, path: fileName, repeat: true, lvolume: 0.5}, {});                            
                         }
                     }
                     else{
