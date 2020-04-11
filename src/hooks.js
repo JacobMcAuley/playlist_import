@@ -36,6 +36,28 @@ Hooks.on('ready', () =>{
         default : {},
         type: Object
     });  
+
+    game.settings.register('playlist_import', 'folderDir', {
+        name: "Base music directory",
+        hint: "Select a directory to serve as the base directory for music import",
+        type: window.Azzu.SettingsTypes.DirectoryPicker,
+        default: "music",
+        scope: "world",
+        config: true
+    })
+
+    let sources = new FilePicker().sources;
+    let options = Object.keys(sources)
+    debugger;
+    game.settings.register('playlist_import', 'source', {
+        name: "Select source from which to download",
+        hint: `Options include [${options}]`,
+        type: String,
+        default : "user",
+        scope: 'world',
+        config: true
+    });  
+
 });
 
 /**

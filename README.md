@@ -17,11 +17,19 @@ If you're like me, you probably enjoy amassing a large collection of songs to pl
 ### FVTT Version
 - Tested on FVTT v0.4.1
 
+
+### It's a feature not a bug!
+Please read the following, as it may answer any questions as to unexpected behavior.
+
 NOTE:
 1. Currently only .mp3, .mp4, .ogg, and .wav files are imported. All other types are excluded. 
+1. Organization is force upon you! This means, that when you select your base directory in which to import, only folders within the base directory are checked, not the files. In otherwords, you must subdivide your music into folders inside the base directory.
 1. Songs added by playlist-importer will be excluded from being added again by the import function. This means, songs names should be unique! Make sure to avoid duplicate names across folders.
+1. Nested folders will result in unsuccessful importations. This will be addressed in future builds
 1. Using spaces in **folder** names will result in importation issues. Spaces in *file names* should be okay.
 1. For general efficiency questions, refer to the "Efficiency" section below. 
+
+
 
 ### Installation Instructions
 
@@ -44,13 +52,14 @@ Auto-Installation Instructions:
 
 *Note*: The paths are vague, as you may have a different data path for your instance of FoundryVTT. If you have questions, feel free to message me.
 1. Download and install the mod, then enable it on Foundry.
-2. Inside of your "/FoundryVTT/Data/" folder, create a new folder called "music". 
-3. Inside of your "/FoundryVTT/Data/music" folder, you may create subfolders with genres and types.
-4. Place your music files inside the corresponding folder names (Refer to structure below)
-5. Inside of FoundryVTT, select the playlist sidebar tab.
-6. Click "Playlist Import" to receive a conformation prompt. 
-7. Select "Begin Import" to wait for imports to finish.
-8. A prompt will appear confirming task completion, confirm, and enjoy the music!
+2. Inside of your "/FoundryVTT/Data/" folder, create a new folder called "music" (or any category you prefer). 
+3. Inside of your module settings, navigate to Playlist import and select the desire base directory (music in this example). Note: If you are pulling from core and not user data, be sure to enable it.
+4. Inside of your "/FoundryVTT/Data/music" folder, you *must* create subfolders, perhaps with genres and types.
+5. Place your music files inside the corresponding folder names (Refer to structure below)
+6. Inside of FoundryVTT, select the playlist sidebar tab.
+7. Click "Playlist Import" to receive a conformation prompt. 
+8. Select "Begin Import" to wait for imports to finish.
+9. A prompt will appear confirming task completion, confirm, and enjoy the music!
 
 ### Example Structure 
 
@@ -86,6 +95,11 @@ Consider checking out the following projects:
 1. [A Spotify music downloader by ritiek](https://github.com/ritiek/spotify-downloader)
 
 Using the following projects, you should be able to download music for your FVTT games. Simply sort the songs into categories and place them into your /Foundry/resources/app/public/music folder and allow the playlist importer to do the rest!
+
+
+### Attributions
+
+Credit for the directory browser goes to [Azzurite](https://gitlab.com/foundry-azzurite/settings-extender) and his wonderful setting extender. It's a great tool for any module developers who want to extend the base settings for modules.
 
 
 ### Efficiency

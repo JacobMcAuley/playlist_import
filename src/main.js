@@ -7,7 +7,6 @@ class PlaylistImporter{
         /*            Global settings               */
         /*  --------------------------------------  */
         this.DEBUG = false;  // Enable to see logs
-        this.IMPORTFOLDER = "music"; // Change music to folder you would like to import from.
     }
     /*  --------------------------------------  */
     /*           Helper functions               */
@@ -191,7 +190,7 @@ class PlaylistImporter{
             one: {
             icon: '<i class="fas fa-check"></i>',
             label: "Begin Import",
-            callback: () => this.beginPlaylistImport(this.IMPORTFOLDER)
+            callback: () => this.beginPlaylistImport(game.settings.get("playlist_import", "source"), window.Azzu.SettingsTypes.DirectoryPicker.format(game.settings.get("playlist_import", "folderDir")))
             },
             two: {
             icon: '<i class="fas fa-times"></i>',
@@ -210,8 +209,9 @@ class PlaylistImporter{
      * Called by the dialogue to begin the importation process. This is the function that starts the process.
      * @param {string} path 
      */
-    async beginPlaylistImport(path){
-        FilePicker.browse("user", path).then(async resp => {
+    async beginPlaylistImport(source, path){
+        debugger;
+        FilePicker.browse(source, path).then(async resp => {
             let localDirs = resp.dirs; 
             for(const dirName of localDirs){
                 let success = await this._generatePlaylist(this._getBaseName(dirName));
