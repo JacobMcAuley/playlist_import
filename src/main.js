@@ -93,11 +93,11 @@ class PlaylistImporter{
      * @param {string} playlistName 
      */
 
-    _getItemsFromDir(path, playlistName){
+    _getItemsFromDir(source, path, playlistName){
         let dupCheck = game.settings.get('playlist_import', 'enableDuplicateChecking');
         let playlist = game.playlists.entities.find(p => p.name === playlistName);
         return new Promise(async (resolve, reject) => {
-            FilePicker.browse("user", path).then(async function(resp){
+            FilePicker.browse(source, path).then(async function(resp){
                 let localFiles = resp.files;
                 for(const fileName of localFiles){
                     const valid = await this._validateFileType(fileName);
@@ -210,7 +210,6 @@ class PlaylistImporter{
      * @param {string} path 
      */
     async beginPlaylistImport(source, path){
-        debugger;
         FilePicker.browse(source, path).then(async resp => {
             let localDirs = resp.dirs; 
             for(const dirName of localDirs){
@@ -220,7 +219,7 @@ class PlaylistImporter{
             }
 
             for(const dirName of localDirs){
-                await this._getItemsFromDir(dirName, this._getBaseName(dirName));   
+                await this._getItemsFromDir(source, dirName, this._getBaseName(dirName));   
             }
 
             if(this.DEBUG)

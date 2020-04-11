@@ -48,7 +48,6 @@ Hooks.on('ready', () =>{
 
     let sources = new FilePicker().sources;
     let options = Object.keys(sources)
-    debugger;
     game.settings.register('playlist_import', 'source', {
         name: "Select source from which to download",
         hint: `Options include [${options}]`,
