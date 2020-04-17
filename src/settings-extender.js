@@ -15,6 +15,37 @@
 
 	// Definitions
 
+	/**
+	 * Collection of utility methods whose only purpose it is to maintain backwards compatibility.
+	 */
+	class Compatibility {
+
+		/**
+		 * Compatibility for <0.5.3
+		 *
+		 * @param data SettingsConfig.getData() object
+		 * @returns data.settings.modules or data.modules
+		 */
+		static getSettingsConfigModules(data) {
+			return data.settings && data.settings.modules ? data.settings.modules : data.modules;
+		}
+
+		/**
+		 * Compatibility for <0.5.3
+		 *
+		 * @param key the key of the game setting
+		 * @returns the game setting object
+		 */
+		static getGameSettting(key) {
+			const settings = game.settings.settings;
+			if (settings instanceof Map) {
+				return settings.get(key);
+			} else {
+				return settings[key];
+			}
+		}
+	}
+
 	function registerSettingsTypes() {
 		if (window.Azzu.SettingsTypes) {
 			return;
@@ -323,9 +354,10 @@
 
 		getData() {
 			const data = super.getData();
-			data.modules.flatMap(m => m.settings).forEach(setting => {
+			const modules = Compatibility.getSettingsConfigModules(data);
+			modules.flatMap(m => m.settings).forEach(setting => {
 				const key = setting.module + '.' + setting.key;
-				const type = game.settings.settings[key].type;
+				const type = Compatibility.getGameSettting(key).type;
 				if (typeof type === 'function') {
 					setting.type = type.name;
 				} else {
