@@ -53,7 +53,7 @@ Auto-Installation Instructions:
 *Note*: The paths are vague, as you may have a different data path for your instance of FoundryVTT. If you have questions, feel free to message me.
 1. Download and install the mod, then enable it on Foundry.
 2. Inside of your "/FoundryVTT/Data/" folder, create a new folder called "music" (or any category you prefer). 
-3. Inside of your module settings, navigate to Playlist import and select the desire base directory (music in this example). Note: If you are pulling from core and not user data, be sure to enable it.
+3. Inside of your module settings, navigate to Playlist import and select the desire base directory (music in this example). Note: If you are pulling from core and not user data, be sure to enable it by using the proper name in the settings option.
 4. Inside of your "/FoundryVTT/Data/music" folder, you *must* create subfolders, perhaps with genres and types.
 5. Place your music files inside the corresponding folder names (Refer to structure below)
 6. Inside of FoundryVTT, select the playlist sidebar tab.
