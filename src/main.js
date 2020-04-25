@@ -93,11 +93,11 @@ class PlaylistImporter{
      * @param {string} playlistName 
      */
 
-    _getItemsFromDir(source, path, playlistName){
+    _getItemsFromDir(source, path, playlistName, options){
         let dupCheck = game.settings.get('playlist_import', 'enableDuplicateChecking');
         let playlist = game.playlists.entities.find(p => p.name === playlistName);
         return new Promise(async (resolve, reject) => {
-            FilePicker.browse(source, path).then(async function(resp){
+            FilePicker.browse(source, path, options).then(async function(resp){
                 let localFiles = resp.files;
                 for(const fileName of localFiles){
                     const valid = await this._validateFileType(fileName);
@@ -210,7 +210,12 @@ class PlaylistImporter{
      * @param {string} path 
      */
     async beginPlaylistImport(source, path){
-        FilePicker.browse(source, path).then(async resp => {
+        let options = {}
+        if(source == "s3"){
+            options['bucket'] = game.settings.get("playlist_import", "bucket");
+        } 
+
+        FilePicker.browse(source, path, options).then(async resp => {
             let localDirs = resp.dirs; 
             for(const dirName of localDirs){
                 let success = await this._generatePlaylist(this._getBaseName(dirName));
@@ -219,12 +224,12 @@ class PlaylistImporter{
             }
 
             for(const dirName of localDirs){
-                await this._getItemsFromDir(source, dirName, this._getBaseName(dirName));   
+                await this._getItemsFromDir(source, dirName, this._getBaseName(dirName), options);   
             }
 
             if(this.DEBUG)
                 console.log("Playlist-Importer: Operation Completed. Thank you!");
             this._playlistCompletePrompt();
-        }) 
+        })
     }
 }

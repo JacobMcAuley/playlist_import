@@ -49,10 +49,19 @@ Hooks.on('ready', () =>{
     let sources = new FilePicker().sources;
     let options = Object.keys(sources)
     game.settings.register('playlist_import', 'source', {
-        name: "Select source from which to download",
+        name: "Select source: ",
         hint: `Options include [${options}]`,
         type: String,
-        default : "user",
+        default : "data",
+        scope: 'world',
+        config: true
+    });  
+
+    game.settings.register('playlist_import', 'bucket', {
+        name: "S3 Bucket:",
+        hint: "If using an s3 bucket, enter in the name of the bucket here.",
+        type: String,
+        default : "",
         scope: 'world',
         config: true
     });  
