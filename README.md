@@ -22,12 +22,12 @@ If you're like me, you probably enjoy amassing a large collection of songs to pl
 Please read the following, as it may answer any questions as to unexpected behavior.
 
 NOTE:
-1. Currently only .mp3, .mp4, .ogg, and .wav files are imported. All other types are excluded. 
+1. Currently only .mp3, .mp4, .ogg, .wav, and .flac files are imported. All other types are excluded. 
 1. Organization is force upon you! This means, that when you select your base directory in which to import, only folders within the base directory are checked, not the files. In otherwords, you must subdivide your music into folders inside the base directory.
 1. Songs added by playlist-importer will be excluded from being added again by the import function. This means, songs names should be unique! Make sure to avoid duplicate names across folders.
 1. Nested folders will result in unsuccessful importations. This will be addressed in future builds
-1. Using spaces in **folder** names will result in importation issues. Spaces in *file names* should be okay.
 1. For general efficiency questions, refer to the "Efficiency" section below. 
+1. Spaces in folder names should no longer cause issues. Please contact me if they cause trouble.
 
 
 
@@ -53,7 +53,9 @@ Auto-Installation Instructions:
 *Note*: The paths are vague, as you may have a different data path for your instance of FoundryVTT. If you have questions, feel free to message me.
 1. Download and install the mod, then enable it on Foundry.
 2. Inside of your "/FoundryVTT/Data/" folder, create a new folder called "music" (or any category you prefer). 
-3. Inside of your module settings, navigate to Playlist import and select the desire base directory (music in this example). Note: If you are pulling from core and not user data, be sure to enable it by using the proper name in the settings option.
+3. Inside of your module settings, navigate to Playlist import and select the desire base directory (music in this example). 
+    1. Note 1: If using S3, The Forge, or something similar be sure to select the proper source in the settings
+    2. Note 2: If using S3 specifically, please name the bucket you are using within the "bucket" section of the playlist-importer settings. If you're not using S3, you can ignore this option.
 4. Inside of your "/FoundryVTT/Data/music" folder, you *must* create subfolders, perhaps with genres and types.
 5. Place your music files inside the corresponding folder names (Refer to structure below)
 6. Inside of FoundryVTT, select the playlist sidebar tab.
@@ -66,7 +68,7 @@ Auto-Installation Instructions:
 ```
     | /FoundryVTT/Data
     | 
-    |---> /music
+    |---> /music <----- This should be selected as the directory
     |     |
     |     |------> /battle_songs
     |     |        |

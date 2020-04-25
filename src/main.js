@@ -24,7 +24,7 @@ class PlaylistImporter{
     }
 
     /**
-     * Validates the audio extension to be of type mp3, mp4, wav, ogg.
+     * Validates the audio extension to be of type mp3, mp4, wav, ogg, or flac.
      * @private
      * @param {string} fileName 
      */
@@ -34,7 +34,7 @@ class PlaylistImporter{
         if(this.DEBUG)
             console.log(`Playlist-Importer: Extension is determined to be (${ext}).`)
 
-        if(ext.match(/(mp3|mp4|wav|ogg)+/g))
+        if(ext.match(/(mp3|mp4|wav|ogg|flac)+/g))
             return true;
         return false;
     }
@@ -49,7 +49,7 @@ class PlaylistImporter{
         name = name.replace(/(%20)+/g, ' ').toLowerCase();
         name = name.split(/(.mp3|.mp4|.wav|.ogg)+/g)[0];
         if(this.DEBUG)
-        console.log(`Playlist-Importer: Converting playlist name to eliminate spaces and extension: ${name}.`);
+            console.log(`Playlist-Importer: Converting playlist name to eliminate spaces and extension: ${name}.`);
         return name;
     }
 
@@ -141,7 +141,7 @@ class PlaylistImporter{
             one: {
             icon: '<i class="fas fa-check"></i>',
             label: "Close",
-            callback: () => console.log("Close")
+            callback: () => console.log("Playlist-Importer: Prompt Closed ")
             }
             },
             default: "Ack",
@@ -218,13 +218,13 @@ class PlaylistImporter{
         FilePicker.browse(source, path, options).then(async resp => {
             let localDirs = resp.dirs; 
             for(const dirName of localDirs){
-                let success = await this._generatePlaylist(this._getBaseName(dirName));
+                let success = await this._generatePlaylist(this._convertToUserFriendly(this._getBaseName(dirName)));
                 if(this.DEBUG)
                     console.log(`TT: ${dirName}: ${success} on creating playlists`);
             }
 
             for(const dirName of localDirs){
-                await this._getItemsFromDir(source, dirName, this._getBaseName(dirName), options);   
+                await this._getItemsFromDir(source, dirName, this._convertToUserFriendly(this._getBaseName(dirName)), options);   
             }
 
             if(this.DEBUG)
