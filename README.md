@@ -15,7 +15,7 @@ If you're like me, you probably enjoy amassing a large collection of songs to pl
 
 
 ### FVTT Version
-- Tested on FVTT v0.4.1
+- Tested on FVTT v0.5.5. Due to using Setting-Extender this is a breaking update to previous versions. If you use a older version of playlist importer, do not update if you're not on v0.5.4+
 
 
 ### It's a feature not a bug!
