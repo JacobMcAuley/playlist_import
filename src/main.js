@@ -106,8 +106,8 @@ class PlaylistImporter{
                         let currentList = await game.settings.get('playlist_import', 'songs');
                         
                         if(dupCheck){
-                            if(currentList[trackName] != true){
-                                currentList[trackName] = true;
+                            if(currentList[(playlistName + trackName)] != true){
+                                currentList[(playlistName + trackName)] = true;
                                 if(this.DEBUG)
                                     console.log(`Playlist-importer: Song ${trackName} not in list.`)
                                 await game.settings.set('playlist_import', 'songs', currentList);     
