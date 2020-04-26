@@ -66,11 +66,30 @@ Hooks.on('ready', () =>{
         config: true
     });  
 
-});
+    game.settings.register('playlist_import', 'shouldRepeat', {
+        name: "Set repeat for tracks",
+        hint: "Should tracks be set to repeat by default?",
+        type: Boolean,
+        default : false,
+        scope: 'world',
+        config: true
+    });  
 
-/**
- * Sets up module settings.
- */
-Hooks.on('init', () => {
-    game.settings.register(PLAYLIST_IMPORTER_CONFIG.module, PLAYLIST_IMPORTER_CONFIG.key, PLAYLIST_IMPORTER_CONFIG.settings);
+    game.settings.register('playlist_import', 'logVolume', {
+        name: "Set default volume",
+        hint: "On a scale from 0.0 - 1.0",
+        type: String,
+        default : "0.5",
+        scope: 'world',
+        config: true
+    });  
+
+    game.settings.register('playlist_import', 'enableDuplicateChecking', {
+        name : "Song Duplicate Checker",
+        hint: "Checks during the importation process to see if duplicate songs exist, excluding them if true.",
+        scope: "world",
+        config: true,
+        default: true,
+        type: Boolean,
+    });  
 });

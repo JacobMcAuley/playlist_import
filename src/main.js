@@ -95,7 +95,17 @@ class PlaylistImporter{
 
     _getItemsFromDir(source, path, playlistName, options){
         let dupCheck = game.settings.get('playlist_import', 'enableDuplicateChecking');
+        let shouldRepeat = game.settings.get('playlist_import', 'shouldRepeat');
+        let logVolume = parseFloat(game.settings.get('playlist_import', 'logVolume'));
+        if(logVolume == NaN){
+            if(this.DEBUG)
+                console.log("Invalid type logVolume")
+            return
+        }
+        logVolume = AudioHelper.inputToVolume(logVolume)
+        
         let playlist = game.playlists.entities.find(p => p.name === playlistName);
+
         return new Promise(async (resolve, reject) => {
             FilePicker.browse(source, path, options).then(async function(resp){
                 let localFiles = resp.files;
@@ -105,20 +115,11 @@ class PlaylistImporter{
                         let trackName = this._convertToUserFriendly(this._getBaseName(fileName));
                         let currentList = await game.settings.get('playlist_import', 'songs');
                         
-                        if(dupCheck){
-                            if(currentList[(playlistName + trackName)] != true){
-                                currentList[(playlistName + trackName)] = true;
-                                if(this.DEBUG)
-                                    console.log(`Playlist-importer: Song ${trackName} not in list.`)
-                                await game.settings.set('playlist_import', 'songs', currentList);     
-                                await playlist.createEmbeddedEntity("PlaylistSound", {name: trackName, path: fileName, repeat: true, lvolume: 0.5}, {});
-                            }  
-                        }
-                        else{   
-                            currentList[trackName] = true;
-                            await game.settings.set('playlist_import', 'songs', currentList);    
-                            await playlist.createEmbeddedEntity("PlaylistSound", {name: trackName, path: fileName, repeat: true, lvolume: 0.5}, {});                            
-                        }
+                        if(!dupCheck || currentList[(playlistName + trackName)] != true){ // A weird way of saying always succeed if dupCheck is on otherwise see if the track is in the list
+                            if(this.DEBUG)
+                                console.log(`Playlist-importer: Song ${trackName} not in list.`)
+                            await this._addSong(currentList, trackName, fileName, playlistName, playlist, shouldRepeat, logVolume) 
+                        }                          
                     }
                     else{
                         if(this.DEBUG)
@@ -128,6 +129,12 @@ class PlaylistImporter{
                 resolve(true);
             }.bind(this));
         });
+    }
+
+    async _addSong(currentList, trackName, fileName, playlistName, playlist, shouldRepeat, logVolume){
+        currentList[(playlistName + trackName)] = true;
+        await game.settings.set('playlist_import', 'songs', currentList);    
+        await playlist.createEmbeddedEntity("PlaylistSound", {name: trackName, path: fileName, repeat: shouldRepeat, volume: logVolume}, {});     
     }
 
     /**
