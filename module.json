@@ -2,12 +2,9 @@
     "name": "playlist_import",
     "title": "Playlist Importer",
     "description": "Speeds up the process of importing your sounds",
-    "version": "1.4.5",
+    "version": "1.4.6",
     "author": "Jacob McAuley",
-    "scripts": [
-        "./src/settings-extender.js",
-        "./src/main.js"
-    ],
+    "scripts": ["./src/settings-extender.js", "./src/main.js"],
     "url": "https://github.com/JacobMcAuley/playlist_import",
     "manifest": "https://raw.githubusercontent.com/JacobMcAuley/playlist_import/master/module.json",
     "download": "https://github.com/JacobMcAuley/playlist_import/archive/master.zip",
