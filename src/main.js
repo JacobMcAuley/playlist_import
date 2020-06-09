@@ -211,7 +211,7 @@ class PlaylistImporter {
                             let trackName = this._convertToUserFriendly(this._getBaseName(fileName));
                             let currentList = await game.settings.get("playlist_import", "songs");
 
-                            if (!dupCheck || currentList[playlistName + trackName] != true) {
+                            if (!dupCheck || currentList[(playlistName + trackName).toLowerCase()] != true) {
                                 // A weird way of saying always succeed if dupCheck is on otherwise see if the track is in the list
                                 if (this.DEBUG) console.log(`Playlist-importer: Song ${trackName} not in list.`);
                                 await this._addSong(currentList, trackName, fileName, playlistName, playlist, shouldRepeat, logVolume);
