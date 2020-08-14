@@ -127,7 +127,7 @@ class PlaylistImporter {
     }
 
     /**
-     * Validates the audio extension to be of type mp3, mp4, wav, ogg, or flac.
+     * Validates the audio extension to be of type mp3, wav, ogg, flac or webm.
      * @private
      * @param {string} fileName
      */
@@ -136,7 +136,7 @@ class PlaylistImporter {
         let ext = fileName.split(".").pop();
         if (this.DEBUG) console.log(`Playlist-Importer: Extension is determined to be (${ext}).`);
 
-        if (ext.match(/(mp3|mp4|wav|ogg|flac)+/g)) return true;
+        if (ext.match(/(mp3|wav|ogg|flac|webm)+/g)) return true;
         return false;
     }
 
@@ -148,7 +148,7 @@ class PlaylistImporter {
 
     _convertToUserFriendly(name) {
         name = name.replace(/(%20)+/g, " ");
-        name = name.split(/(.mp3|.mp4|.wav|.ogg)+/g)[0];
+        name = name.split(/(.mp3|.wav|.ogg|.flac|.webm)+/g)[0];
         if (this.DEBUG) console.log(`Playlist-Importer: Converting playlist name to eliminate spaces and extension: ${name}.`);
         return name;
     }
