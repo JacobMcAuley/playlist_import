@@ -104,7 +104,7 @@ Using the following projects, you should be able to download music for your FVTT
 Credit for the directory browser goes to [Azzurite](https://gitlab.com/foundry-azzurite/settings-extender) and his wonderful setting extender. It's a great tool for any module developers who want to extend the base settings for modules.
 
 Thanks to Sciguymjm for all the suggestions for improvements to the importer!
-Thanks to JJBocanegra for assisting in the development of Playlist Importer.
+Thanks to users JJBocanegra, Jlanatta, and JMMarchant for assisting in the development of Playlist Importer.
 
 ### Efficiency
 
