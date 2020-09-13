@@ -147,8 +147,8 @@ class PlaylistImporter {
      */
 
     _convertToUserFriendly(name) {
-        name = name.replace(/(%20)+/g, " ");
-        name = name.split(/(.mp3|.wav|.ogg|.flac|.webm)+/g)[0];
+        name = decodeURIComponent(name);
+        name = name.split(/(.mp3|.mp4|.wav|.ogg)+/g)[0];
         if (this.DEBUG) console.log(`Playlist-Importer: Converting playlist name to eliminate spaces and extension: ${name}.`);
         return name;
     }
