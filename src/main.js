@@ -1,7 +1,7 @@
 const PLIMP = this.PLIMP || {};
 
 class PlaylistImporterInitializer {
-    constructor() {}
+    constructor() { }
 
     static initalize() {
         PlaylistImporterInitializer.hookReady();
@@ -78,6 +78,15 @@ class PlaylistImporterInitializer {
             game.settings.register("playlist_import", "shouldRepeat", {
                 name: "Set repeat for tracks",
                 hint: "Should tracks be set to repeat by default?",
+                type: Boolean,
+                default: false,
+                scope: "world",
+                config: true,
+            });
+
+            game.settings.register("playlist_import", "shouldStream", {
+                name: "Set stream for tracks",
+                hint: "Should tracks be set to stream by default?",
                 type: Boolean,
                 default: false,
                 scope: "world",
@@ -192,6 +201,7 @@ class PlaylistImporter {
     _getItemsFromDir(source, path, playlistName, options) {
         let dupCheck = game.settings.get("playlist_import", "enableDuplicateChecking");
         let shouldRepeat = game.settings.get("playlist_import", "shouldRepeat");
+        let shouldStream = game.settings.get("playlist_import", "shouldStream");
         let logVolume = parseFloat(game.settings.get("playlist_import", "logVolume"));
         if (logVolume == NaN) {
             if (this.DEBUG) console.log("Invalid type logVolume");
@@ -214,7 +224,7 @@ class PlaylistImporter {
                             if (!dupCheck || currentList[(playlistName + trackName).toLowerCase()] != true) {
                                 // A weird way of saying always succeed if dupCheck is on otherwise see if the track is in the list
                                 if (this.DEBUG) console.log(`Playlist-importer: Song ${trackName} not in list.`);
-                                await this._addSong(currentList, trackName, fileName, playlistName, playlist, shouldRepeat, logVolume);
+                                await this._addSong(currentList, trackName, fileName, playlistName, playlist, shouldRepeat, logVolume, shouldStream);
                             }
                         } else {
                             if (this.DEBUG)
@@ -229,10 +239,16 @@ class PlaylistImporter {
         });
     }
 
-    async _addSong(currentList, trackName, fileName, playlistName, playlist, shouldRepeat, logVolume) {
+    async _addSong(currentList, trackName, fileName, playlistName, playlist, shouldRepeat, logVolume, shouldStream) {
         currentList[(playlistName + trackName).toLowerCase()] = true;
         await game.settings.set("playlist_import", "songs", currentList);
-        await playlist.createEmbeddedEntity("PlaylistSound", { name: trackName, path: fileName, repeat: shouldRepeat, volume: logVolume }, {});
+
+        const is07x = game.data.version.split(".")[1] === "7"
+
+        if (is07x)
+            await playlist.createEmbeddedEntity("PlaylistSound", { name: trackName, path: fileName, repeat: shouldRepeat, volume: logVolume, streaming: shouldStream }, {});
+        else
+            await playlist.createEmbeddedEntity("PlaylistSound", { name: trackName, path: fileName, repeat: shouldRepeat, volume: logVolume }, {});
     }
 
     /**
