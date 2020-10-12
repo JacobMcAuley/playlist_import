@@ -89,16 +89,6 @@ Auto-Installation Instructions:
     
 ```
 
-### Recommendations
-
-Consider checking out the following projects:
-
-1. [A Youtube music downloader by YTDL-org](https://github.com/ytdl-org/youtube-dl)
-1. [A Spotify music downloader by ritiek](https://github.com/ritiek/spotify-downloader)
-
-Using the following projects, you should be able to download music for your FVTT games. Simply sort the songs into categories and place them into your /Foundry/resources/app/public/music folder and allow the playlist importer to do the rest!
-
-
 ### Attributions
 
 Credit for the directory browser goes to [Azzurite](https://gitlab.com/foundry-azzurite/settings-extender) and his wonderful setting extender. It's a great tool for any module developers who want to extend the base settings for modules.
