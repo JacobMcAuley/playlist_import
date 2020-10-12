@@ -15,7 +15,8 @@ class PlaylistImporterInitializer {
          */
 
         Hooks.on("renderPlaylistDirectory", (app, html, data) => {
-            const importButton = $('<button  style="min-width: 96%; margin: 10px 6px;">Playlist Import</button>');
+            const importPlaylistString = game.i18n.localize("PLI.ImportButton");
+            const importButton = $(`<button  style="min-width: 96%; margin: 10px 6px;">${importPlaylistString}</button>`);
             html.find(".directory-footer").append(importButton);
             importButton.click((ev) => {
                 PLIMP.playlistImporter.playlistDirectoryInterface();
@@ -28,7 +29,8 @@ class PlaylistImporterInitializer {
          * Appends a button onto the settings to clear playlist "Hashtable" memory.
          */
         Hooks.on("renderSettings", (app, html) => {
-            const importButton = $("<button>Playlist-Importer Memory Clear</button>");
+            const clearMemoryString = game.i18n.localize("PLI.ClearMemory");
+            const importButton = $(`<button>${clearMemoryString}</button>`);
             html.find("button[data-action='players']").after(importButton);
             importButton.click((ev) => {
                 PLIMP.playlistImporter.clearMemoryInterface();
@@ -47,8 +49,8 @@ class PlaylistImporterInitializer {
             });
 
             game.settings.register("playlist_import", "folderDir", {
-                name: "Base music directory",
-                hint: "Select a directory to serve as the base directory for music import",
+                name: game.i18n.localize("PLI.FolderDir"),
+                hint: game.i18n.localize("PLI.FolderDirHint"),
                 type: window.Azzu.SettingsTypes.DirectoryPicker,
                 default: "music",
                 scope: "world",
@@ -58,8 +60,8 @@ class PlaylistImporterInitializer {
             let sources = new FilePicker().sources;
             let options = Object.keys(sources);
             game.settings.register("playlist_import", "source", {
-                name: "Select source: ",
-                hint: `Options include [${options}]`,
+                name: game.i18n.localize("PLI.SelectSource"),
+                hint: `${game.i18n.localize("PLI.SelectSourceHint")} [${options}]`,
                 type: String,
                 default: "data",
                 scope: "world",
@@ -67,8 +69,8 @@ class PlaylistImporterInitializer {
             });
 
             game.settings.register("playlist_import", "bucket", {
-                name: "S3 Bucket:",
-                hint: "If using an s3 bucket, enter in the name of the bucket here.",
+                name: game.i18n.localize("PLI.BucketSelect"),
+                hint: game.i18n.localize("PLI.BucketSelectHint"),
                 type: String,
                 default: "",
                 scope: "world",
@@ -76,8 +78,8 @@ class PlaylistImporterInitializer {
             });
 
             game.settings.register("playlist_import", "shouldRepeat", {
-                name: "Set repeat for tracks",
-                hint: "Should tracks be set to repeat by default?",
+                name: game.i18n.localize("PLI.ShouldRepeat"),
+                hint: game.i18n.localize("PLI.ShouldRepeatHint"),
                 type: Boolean,
                 default: false,
                 scope: "world",
@@ -85,8 +87,8 @@ class PlaylistImporterInitializer {
             });
 
             game.settings.register("playlist_import", "shouldStream", {
-                name: "Set stream for tracks",
-                hint: "Should tracks be set to stream by default?",
+                name: game.i18n.localize("PLI.ShouldStream"),
+                hint: game.i18n.localize("PLI.ShouldStreamHint"),
                 type: Boolean,
                 default: false,
                 scope: "world",
@@ -94,8 +96,8 @@ class PlaylistImporterInitializer {
             });
 
             game.settings.register("playlist_import", "logVolume", {
-                name: "Set default volume",
-                hint: "On a scale from 0.0 - 1.0",
+                name: game.i18n.localize("PLI.LogVolume"),
+                hint: game.i18n.localize("PLI.LogVolumeHint"),
                 type: String,
                 default: "0.5",
                 scope: "world",
@@ -103,8 +105,8 @@ class PlaylistImporterInitializer {
             });
 
             game.settings.register("playlist_import", "enableDuplicateChecking", {
-                name: "Song Duplicate Checker",
-                hint: "Checks during the importation process to see if duplicate songs exist, excluding them if true.",
+                name: game.i18n.localize("PLI.EnableDuplicate"),
+                hint: game.i18n.localize("PLI.EnableDuplicateHint"),
                 scope: "world",
                 config: true,
                 default: true,
@@ -256,17 +258,17 @@ class PlaylistImporter {
      */
     _playlistCompletePrompt() {
         let playlistComplete = new Dialog({
-            title: "Operation Completed",
-            content: "<p>Playlist-Importer has completed its task.</p>",
+            title: game.i18n.localize("PLI.OperationFinishTitle"),
+            content: `<p>${game.i18n.localize("PLI.OpeartionFinishContent")}</p>`,
             buttons: {
                 one: {
                     icon: '<i class="fas fa-check"></i>',
-                    label: "Close",
-                    callback: () => console.log("Playlist-Importer: Prompt Closed "),
+                    label: "",
+                    callback: () => { },
                 },
             },
             default: "Ack",
-            close: () => console.log("Playlist-Importer: Prompt Closed"),
+            close: () => { },
         });
         playlistComplete.render(true);
     }
@@ -284,15 +286,15 @@ class PlaylistImporter {
 
     clearMemoryInterface() {
         let clearMemoryPrompt = new Dialog({
-            title: "WARNING: IRREVERSIBLE",
-            content: "<p>Would you like to reset the stored songs table? This will make it so Playlist-importer believes that all songs are new.</p>",
+            title: game.i18n.localize("PLI.ClearMemoryTitle"),
+            content: `<p>${game.i18n.localize("PLI.ClearMemoryDescription")}</p>`,
             buttons: {
                 one: {
-                    label: "*WARNING: Irreversible* CLEAR TABLE",
+                    label: game.i18n.localize("PLI.ClearMemoryWarning"),
                     callback: () => this._clearSongHistory(),
                 },
                 two: {
-                    label: "Cancel",
+                    label: game.i18n.localize("PLI.CancelOperation"),
                     callback: () => console.log("Playlist-Importer: Canceled"),
                 },
             },
@@ -304,12 +306,12 @@ class PlaylistImporter {
 
     playlistDirectoryInterface() {
         let playlistPrompt = new Dialog({
-            title: "Import from music directory?",
-            content: "<p>Select either to import or cancel</p>",
+            title: game.i18n.localize("PLI.ImportMusicTitle"),
+            content: `<p>${game.i18n.localize("PLI.ImportMusicDescription")}</p>`,
             buttons: {
                 one: {
                     icon: '<i class="fas fa-check"></i>',
-                    label: "Begin Import",
+                    label: game.i18n.localize("PLI.ImportMusicLabel"),
                     callback: () =>
                         this.beginPlaylistImport(
                             game.settings.get("playlist_import", "source"),
@@ -318,12 +320,12 @@ class PlaylistImporter {
                 },
                 two: {
                     icon: '<i class="fas fa-times"></i>',
-                    label: "Cancel",
+                    label: game.i18n.localize("PLI.CancelOperation"),
                     callback: () => console.log("Playlist-Importer: Canceled"),
                 },
             },
             default: "Cancel",
-            close: () => console.log("Playlist-Importer: Prompt Closed"),
+            close: () => { },
         });
         playlistPrompt.render(true);
     }
