@@ -99,7 +99,7 @@ Thanks to users JJBocanegra, Jlanatta, and JMMarchant for assisting in the devel
 
 ### Language Translations
 
-Spanish: Thanks to Lozalojo for provided the Spanish translation.
+Spanish: Thanks to Lozalojo for providing the Spanish translation.
 
 ### Efficiency
 
