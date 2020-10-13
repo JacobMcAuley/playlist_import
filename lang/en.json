@@ -23,5 +23,5 @@
     "PLI.LogvolumeHint": "On a scale from 0.0 - 1.0",
     "PLI.EnableDuplicate": "Song Duplicate Checker",
     "PLI.EnableDuplicateHint": "Checks during the importation process to see if duplicate songs exist, excluding them if true.",
-    "PLI.CancelOperation": "Cancel",
+    "PLI.CancelOperation": "Cancel"
 }
