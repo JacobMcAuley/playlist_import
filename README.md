@@ -96,6 +96,11 @@ Credit for the directory browser goes to [Azzurite](https://gitlab.com/foundry-a
 Thanks to Sciguymjm for all the suggestions for improvements to the importer!
 Thanks to users JJBocanegra, Jlanatta, and JMMarchant for assisting in the development of Playlist Importer.
 
+
+### Language Translations
+
+Spanish: Thanks to Lozalojo for provided the Spanish translation.
+
 ### Efficiency
 
 Songs are added to a generalized hashtable that is checked each time a song is asked to be added. In this implementation, I use the name of the song as the key in which to add to the hashtable. This is the primary reason that unique song names should be used. When attempting to add a song, the hashtable is checked to see if an entry has already been added. Given the notion of hashtables, this should be constant time and at worse O(n) time (if identical song names are used) as it degrades to a list. 
