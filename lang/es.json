@@ -20,7 +20,7 @@
     "PLI.ShouldStream": "Transmisión de pistas",
     "PLI.ShouldStreamHint": "¿Deben las pistas tener la transmisión activada por defecto?",
     "PLI.LogVolume": "Ajuste volumen por defecto",
-    "PLI.LogvolumeHint": "En una escala de 0.0 - 1.0",
+    "PLI.LogVolumeHint": "En una escala de 0.0 - 1.0",
     "PLI.EnableDuplicate": "Comprobación de Duplicado de Pistas",
     "PLI.EnableDuplicateHint": "Comprueba durante el proceso de importación si la pista está duplicada, en cuyo caso, la excluye.",
     "PLI.CancelOperation": "Cancelar"
