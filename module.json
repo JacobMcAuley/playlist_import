@@ -2,7 +2,7 @@
     "name": "playlist_import",
     "title": "Playlist Importer",
     "description": "Speeds up the process of importing your sounds",
-    "version": "1.5.2",
+    "version": "1.5.3",
     "author": "Jacob McAuley",
     "scripts": [
         "./src/settings-extender.js",
