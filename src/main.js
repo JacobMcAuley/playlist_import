@@ -17,11 +17,14 @@ class PlaylistImporterInitializer {
         Hooks.on("renderPlaylistDirectory", (app, html, data) => {
             const importPlaylistString = game.i18n.localize("PLI.ImportButton");
             const importButton = $(`<button  style="min-width: 96%; margin: 10px 6px;">${importPlaylistString}</button>`);
-            html.find(".directory-footer").append(importButton);
-            importButton.click((ev) => {
-                PLIMP.playlistImporter.playlistDirectoryInterface();
-            });
+            if (game.user.isGM || game.user.can("SETTINGS_MODIFY")) {
+                html.find(".directory-footer").append(importButton);
+                importButton.click((ev) => {
+                    PLIMP.playlistImporter.playlistDirectoryInterface();
+                });
+            }
         });
+
     }
 
     static hookRenderSettings() {
@@ -31,10 +34,13 @@ class PlaylistImporterInitializer {
         Hooks.on("renderSettings", (app, html) => {
             const clearMemoryString = game.i18n.localize("PLI.ClearMemory");
             const importButton = $(`<button>${clearMemoryString}</button>`);
-            html.find("button[data-action='players']").after(importButton);
-            importButton.click((ev) => {
-                PLIMP.playlistImporter.clearMemoryInterface();
-            });
+            // For posterity.
+            if (game.user.isGM || game.user.can("SETTINGS_MODIFY")) {
+                html.find("button[data-action='players']").after(importButton);
+                importButton.click((ev) => {
+                    PLIMP.playlistImporter.clearMemoryInterface();
+                });
+            }
         });
     }
 
@@ -189,9 +195,8 @@ class PlaylistImporter {
         name = decodeURIComponent(name);
         name = name.split(/(.mp3|.mp4|.wav|.ogg|.flac)+/g)[0]
           .replace(/^\d\d+_/, '')
-          .replaceAll(/[_]+/g, ' ');
+          .replace(/[_]+/g, ' ');
 
-        // replaceAll doesn't seem to like this.
         while (name !== name.replace(/([a-z])([A-Z][a-z]*)([A-Z])?/, this._convertCamelCase)) {
             name = name.replace(/([a-z])([A-Z][a-z]*)([A-Z])?/, this._convertCamelCase);
         }
