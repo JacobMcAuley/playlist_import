@@ -194,18 +194,24 @@ class PlaylistImporter {
         let words = [], small = ['a', 'an', 'at', 'and', 'but', 'by', 'for', 'if', 'nor', 'on', 'of', 'or', 'so', 'the', 'to', 'yet'];
         name = decodeURIComponent(name);
         name = name.split(/(.mp3|.mp4|.wav|.ogg|.flac)+/g)[0]
-          .replace(/^\d\d+_/, '')
+          .replace(/^\d\d+ *_*-* */, '')
           .replace(/[_]+/g, ' ');
 
         while (name !== name.replace(/([a-z])([A-Z][a-z]*)([A-Z])?/, this._convertCamelCase)) {
             name = name.replace(/([a-z])([A-Z][a-z]*)([A-Z])?/, this._convertCamelCase);
         }
 
-        words = name.split(' ');
+        words = name.replace(/\s+/g, ' ').trim().split(' '); // remove extra spaces prior to trimming to remove .toUpperCase() error
 
         for (let i = 0; i < words.length; i++) {
             if (i === 0 || i === (words.length - 1) || !small.includes(words[i])) {
-                words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+                try{
+                    words[i] = words[i][0].toUpperCase() + words[i].substr(1);
+                }
+                catch(error){
+                    console.log(error);
+                    console.log(`Error in attempting to parse song ${name}`);
+                }
             }
         }
 
