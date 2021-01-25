@@ -5,6 +5,8 @@ class PlaylistImporterInitializer {
         PlaylistImporterInitializer.hookReady();
         PlaylistImporterInitializer.hookRenderPlaylistDirectory();
         PlaylistImporterInitializer.hookRenderSettings();
+        PlaylistImporterInitializer.hookDeletePlaylist();
+        PlaylistImporterInitializer.hookDeletePlaylistSound();
     }
 
     static hookRenderPlaylistDirectory() {
@@ -25,6 +27,40 @@ class PlaylistImporterInitializer {
 
     }
 
+    static _removeSound(playlistName, soundNames){
+        let currentList = game.settings.get("playlist_import", "songs");
+        soundNames.forEach(soundName => {
+            let trackName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(soundName));
+            let mergedName = (playlistName + trackName).toLowerCase()
+            if(trackName && playlistName){
+                if (currentList[mergedName]){
+                    delete currentList[mergedName]
+                }
+            }
+        });
+        game.settings.set("playlist_import", "songs", currentList);
+    }
+
+    static hookDeletePlaylist(){
+        Hooks.on("deletePlaylist", (playlist, flags, id) => {
+            let playlistName = playlist.name;
+            let soundObjects = playlist.sounds;
+            let sounds = []
+            for(let i = 0; i < soundObjects.length; ++i){
+                sounds.push(soundObjects[i].path);
+            }
+
+            PlaylistImporterInitializer._removeSound(playlistName, sounds)
+        });
+    }
+    
+    static hookDeletePlaylistSound(){
+        Hooks.on("deletePlaylistSound", (playlist, data, flags, id) => {
+            let playlistName = playlist.data.name;
+            let soundName = data.path;
+            PlaylistImporterInitializer._removeSound(playlistName, [soundName])
+        });
+    }
 
     static hookRenderSettings() {
         /**
@@ -85,7 +121,7 @@ class PlaylistImporter {
      * @param {string} filePath
      */
 
-    _getBaseName(filePath) {
+    static _getBaseName(filePath) {
         return filePath.split("/").reverse()[0];
     }
 
@@ -114,7 +150,7 @@ class PlaylistImporter {
      * @returns {string}
      * @private
      */
-    _convertCamelCase(match, p1, p2, p3, offset, input_string) {
+    static _convertCamelCase(match, p1, p2, p3, offset, input_string) {
         let replace, small = ['a', 'an', 'at', 'and', 'but', 'by', 'for', 'if', 'nor', 'on', 'of', 'or', 'so', 'the', 'to', 'yet'];
 
         if (p3) {
@@ -136,7 +172,7 @@ class PlaylistImporter {
      * @param {string} name
      */
 
-    _convertToUserFriendly(name) {
+    static _convertToUserFriendly(name) {
         let words = [], small = ['a', 'an', 'at', 'and', 'but', 'by', 'for', 'if', 'nor', 'on', 'of', 'or', 'so', 'the', 'to', 'yet'];
         let regexReplace = game.settings.get("playlist_import", "customRegexDelete");
         name = decodeURIComponent(name);
@@ -144,8 +180,8 @@ class PlaylistImporter {
           .replace(regexReplace, '')
           .replace(/[_]+/g, ' ');
 
-        while (name !== name.replace(/([a-z])([A-Z][a-z]*)([A-Z])?/, this._convertCamelCase)) {
-            name = name.replace(/([a-z])([A-Z][a-z]*)([A-Z])?/, this._convertCamelCase);
+        while (name !== name.replace(/([a-z])([A-Z][a-z]*)([A-Z])?/, PlaylistImporter._convertCamelCase)) {
+            name = name.replace(/([a-z])([A-Z][a-z]*)([A-Z])?/, PlaylistImporter._convertCamelCase);
         }
 
         words = name.replace(/\s+/g, ' ').trim().split(' '); // remove extra spaces prior to trimming to remove .toUpperCase() error
@@ -225,7 +261,7 @@ class PlaylistImporter {
                     for (const fileName of localFiles) {
                         const valid = await this._validateFileType(fileName);
                         if (valid) {
-                            let trackName = this._convertToUserFriendly(this._getBaseName(fileName));
+                            let trackName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(fileName));
                             let currentList = await game.settings.get("playlist_import", "songs");
 
                             if (!dupCheck || currentList[(playlistName + trackName).toLowerCase()] != true) {
@@ -350,12 +386,12 @@ class PlaylistImporter {
         FilePicker.browse(source, path, options).then(async (resp) => {
             let localDirs = resp.dirs;
             for (const dirName of localDirs) {
-                let success = await this._generatePlaylist(this._convertToUserFriendly(this._getBaseName(dirName)));
+                let success = await this._generatePlaylist(PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName)));
                 if (this.DEBUG) console.log(`TT: ${dirName}: ${success} on creating playlists`);
             }
 
             for (const dirName of localDirs) {
-                await this._getItemsFromDir(source, dirName, this._convertToUserFriendly(this._getBaseName(dirName)), options);
+                await this._getItemsFromDir(source, dirName, PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName)), options);
             }
 
             if (this.DEBUG) console.log("Playlist-Importer: Operation Completed. Thank you!");
