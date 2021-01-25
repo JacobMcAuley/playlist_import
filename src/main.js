@@ -174,7 +174,7 @@ class PlaylistImporter {
 
     static _convertToUserFriendly(name) {
         let words = [], small = ['a', 'an', 'at', 'and', 'but', 'by', 'for', 'if', 'nor', 'on', 'of', 'or', 'so', 'the', 'to', 'yet'];
-        let regexReplace = game.settings.get("playlist_import", "customRegexDelete");
+        let regexReplace = new RegExp(game.settings.get("playlist_import", "customRegexDelete"));
         name = decodeURIComponent(name);
         name = name.split(/(.mp3|.mp4|.wav|.ogg|.flac)+/g)[0]
           .replace(regexReplace, '')

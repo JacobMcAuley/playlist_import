@@ -87,8 +87,8 @@ class PlaylistImporterConfig {
                     hint: game.i18n.localize("PLI.customRegexDeleteHint"),
                     scope: "world",
                     config: true,
-                    default: /^\d\d+ *_*-* */,
-                    type: RegExp,
+                    default: "^\\d\\d+ *_*-* *",
+                    type: String,
                 }
             }
         ]
