@@ -5,7 +5,8 @@
     "version": "1.5.5",
     "author": "Jacob McAuley",
     "scripts": [
-        "./src/settings-extender.js",
+        "./config/settings-extender.js",
+        "./config/config.js",
         "./src/main.js"
     ],
     "languages": [

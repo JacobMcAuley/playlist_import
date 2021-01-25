@@ -1,5 +1,3 @@
-const PLIMP = this.PLIMP || {};
-
 class PlaylistImporterInitializer {
     constructor() { }
 
@@ -27,6 +25,7 @@ class PlaylistImporterInitializer {
 
     }
 
+
     static hookRenderSettings() {
         /**
          * Appends a button onto the settings to clear playlist "Hashtable" memory.
@@ -47,77 +46,24 @@ class PlaylistImporterInitializer {
     static hookReady() {
         Hooks.on("ready", () => {
             PLIMP.playlistImporter = new PlaylistImporter();
-
-            game.settings.register("playlist_import", "songs", {
-                scope: "world",
-                default: {},
-                type: Object,
-            });
-
-            game.settings.register("playlist_import", "folderDir", {
-                name: game.i18n.localize("PLI.FolderDir"),
-                hint: game.i18n.localize("PLI.FolderDirHint"),
-                type: window.Azzu.SettingsTypes.DirectoryPicker,
-                default: "music",
-                scope: "world",
-                config: true,
-            });
-
-            let sources = new FilePicker().sources;
-            let options = Object.keys(sources);
-            game.settings.register("playlist_import", "source", {
-                name: game.i18n.localize("PLI.SelectSource"),
-                hint: `${game.i18n.localize("PLI.SelectSourceHint")} [${options}]`,
-                type: String,
-                default: "data",
-                scope: "world",
-                config: true,
-            });
-
-            game.settings.register("playlist_import", "bucket", {
-                name: game.i18n.localize("PLI.BucketSelect"),
-                hint: game.i18n.localize("PLI.BucketSelectHint"),
-                type: String,
-                default: "",
-                scope: "world",
-                config: true,
-            });
-
-            game.settings.register("playlist_import", "shouldRepeat", {
-                name: game.i18n.localize("PLI.ShouldRepeat"),
-                hint: game.i18n.localize("PLI.ShouldRepeatHint"),
-                type: Boolean,
-                default: false,
-                scope: "world",
-                config: true,
-            });
-
-            game.settings.register("playlist_import", "shouldStream", {
-                name: game.i18n.localize("PLI.ShouldStream"),
-                hint: game.i18n.localize("PLI.ShouldStreamHint"),
-                type: Boolean,
-                default: false,
-                scope: "world",
-                config: true,
-            });
-
-            game.settings.register("playlist_import", "logVolume", {
-                name: game.i18n.localize("PLI.LogVolume"),
-                hint: game.i18n.localize("PLI.LogVolumeHint"),
-                type: String,
-                default: "0.5",
-                scope: "world",
-                config: true,
-            });
-
-            game.settings.register("playlist_import", "enableDuplicateChecking", {
-                name: game.i18n.localize("PLI.EnableDuplicate"),
-                hint: game.i18n.localize("PLI.EnableDuplicateHint"),
-                scope: "world",
-                config: true,
-                default: true,
-                type: Boolean,
-            });
+            PlaylistImporterInitializer._registerSettings();
+        });
+    }
+    
+    static _registerSettings() {
+        PlaylistImporterConfig.initializeConfigParams();
+        PLIMP.PLAYLISTCONFIG.forEach((setting) => {
+            game.settings.register(PLIMP.MODULENAME, setting.key, setting.settings);
+        });
+        let sources = new FilePicker().sources;
+        let options = Object.keys(sources);
+        game.settings.register("playlist_import", "source", {
+            name: game.i18n.localize("PLI.SelectSource"),
+            hint: `${game.i18n.localize("PLI.SelectSourceHint")} [${options}]`,
+            type: String,
+            default: "data",
+            scope: "world",
+            config: true,
         });
     }
 }
@@ -192,9 +138,10 @@ class PlaylistImporter {
 
     _convertToUserFriendly(name) {
         let words = [], small = ['a', 'an', 'at', 'and', 'but', 'by', 'for', 'if', 'nor', 'on', 'of', 'or', 'so', 'the', 'to', 'yet'];
+        let regexReplace = game.settings.get("playlist_import", "customRegexDelete");
         name = decodeURIComponent(name);
         name = name.split(/(.mp3|.mp4|.wav|.ogg|.flac)+/g)[0]
-          .replace(/^\d\d+ *_*-* */, '')
+          .replace(regexReplace, '')
           .replace(/[_]+/g, ' ');
 
         while (name !== name.replace(/([a-z])([A-Z][a-z]*)([A-Z])?/, this._convertCamelCase)) {
