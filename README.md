@@ -1,3 +1,6 @@
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/jacobmcauley/playlist_import) 
+![GitHub Releases](https://img.shields.io/github/downloads/JacobMcAuley/playlist_import/latest/total) 
+
 # Playlist importer 
 
 This module aims to simplify the process of adding multiple music tracks to Foundry VTT, allowing for bulk importation of songs.
@@ -92,6 +95,8 @@ Auto-Installation Instructions:
 ### Attributions
 
 Credit for the directory browser goes to [Azzurite](https://gitlab.com/foundry-azzurite/settings-extender) and his wonderful setting extender. It's a great tool for any module developers who want to extend the base settings for modules.
+
+Thanks to Ariphaos for their help with creating a more user friendly naming convention when importing playlists! 
 
 Thanks to Sciguymjm for all the suggestions for improvements to the importer!
 Thanks to users JJBocanegra, Jlanatta, and JMMarchant for assisting in the development of Playlist Importer.
