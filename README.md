@@ -94,8 +94,6 @@ Auto-Installation Instructions:
 
 ### Attributions
 
-Credit for the directory browser goes to [Azzurite](https://gitlab.com/foundry-azzurite/settings-extender) and his wonderful setting extender. It's a great tool for any module developers who want to extend the base settings for modules.
-
 Thanks to Ariphaos for their help with creating a more user friendly naming convention when importing playlists! 
 
 Thanks to Sciguymjm for all the suggestions for improvements to the importer!

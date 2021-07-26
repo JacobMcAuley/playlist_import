@@ -2,7 +2,7 @@ const PLIMP = this.PLIMP || {};
 PLIMP.MODULENAME = "playlist_import";
 
 class PlaylistImporterConfig {
-    constructor(){}
+    constructor() { }
 
     static initializeConfigParams() {
         PLIMP.PLAYLISTCONFIG = [
@@ -52,7 +52,8 @@ class PlaylistImporterConfig {
                 settings: {
                     name: game.i18n.localize("PLI.FolderDir"),
                     hint: game.i18n.localize("PLI.FolderDirHint"),
-                    type: window.Azzu.SettingsTypes.DirectoryPicker,
+                    type: String,
+                    filePicker: true,
                     default: "music",
                     scope: "world",
                     config: true,
@@ -92,6 +93,6 @@ class PlaylistImporterConfig {
                 }
             }
         ]
-        
+
     }
 }

@@ -27,13 +27,13 @@ class PlaylistImporterInitializer {
 
     }
 
-    static _removeSound(playlistName, soundNames){
+    static _removeSound(playlistName, soundNames) {
         let currentList = game.settings.get("playlist_import", "songs");
         soundNames.forEach(soundName => {
             let trackName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(soundName));
             let mergedName = (playlistName + trackName).toLowerCase()
-            if(trackName && playlistName){
-                if (currentList[mergedName]){
+            if (trackName && playlistName) {
+                if (currentList[mergedName]) {
                     delete currentList[mergedName]
                 }
             }
@@ -41,20 +41,20 @@ class PlaylistImporterInitializer {
         game.settings.set("playlist_import", "songs", currentList);
     }
 
-    static hookDeletePlaylist(){
+    static hookDeletePlaylist() {
         Hooks.on("deletePlaylist", (playlist, flags, id) => {
             let playlistName = playlist.name;
             let soundObjects = playlist.sounds;
             let sounds = []
-            for(let i = 0; i < soundObjects.length; ++i){
+            for (let i = 0; i < soundObjects.length; ++i) {
                 sounds.push(soundObjects[i].path);
             }
 
             PlaylistImporterInitializer._removeSound(playlistName, sounds)
         });
     }
-    
-    static hookDeletePlaylistSound(){
+
+    static hookDeletePlaylistSound() {
         Hooks.on("deletePlaylistSound", (playlist, data, flags, id) => {
             let playlistName = playlist.data.name;
             let soundName = data.path;
@@ -85,7 +85,7 @@ class PlaylistImporterInitializer {
             PlaylistImporterInitializer._registerSettings();
         });
     }
-    
+
     static _registerSettings() {
         PlaylistImporterConfig.initializeConfigParams();
         PLIMP.PLAYLISTCONFIG.forEach((setting) => {
@@ -177,8 +177,8 @@ class PlaylistImporter {
         let regexReplace = new RegExp(game.settings.get("playlist_import", "customRegexDelete"));
         name = decodeURIComponent(name);
         name = name.split(/(.mp3|.mp4|.wav|.ogg|.flac)+/g)[0]
-          .replace(regexReplace, '')
-          .replace(/[_]+/g, ' ');
+            .replace(regexReplace, '')
+            .replace(/[_]+/g, ' ');
 
         while (name !== name.replace(/([a-z])([A-Z][a-z]*)([A-Z])?/, PlaylistImporter._convertCamelCase)) {
             name = name.replace(/([a-z])([A-Z][a-z]*)([A-Z])?/, PlaylistImporter._convertCamelCase);
@@ -188,10 +188,10 @@ class PlaylistImporter {
 
         for (let i = 0; i < words.length; i++) {
             if (i === 0 || i === (words.length - 1) || !small.includes(words[i])) {
-                try{
+                try {
                     words[i] = words[i][0].toUpperCase() + words[i].substr(1);
                 }
-                catch(error){
+                catch (error) {
                     console.log(error);
                     console.log(`Error in attempting to parse song ${name}`);
                 }
@@ -314,6 +314,23 @@ class PlaylistImporter {
         playlistComplete.render(true);
     }
 
+    _playlistStatusPrompt() {
+        let playlistComplete = new Dialog({
+            title: "Status Update",
+            content: `<p>Number of playlists completed <span id="finished_playlists">0</span>/<span id="total_playlists">0</span></p>`,
+            buttons: {
+                one: {
+                    icon: '<i class="fas fa-check"></i>',
+                    label: "",
+                    callback: () => { },
+                },
+            },
+            default: "Ack",
+            close: () => { },
+        });
+        playlistComplete.render(true);
+    }
+
     /**
      * A helper function designed to clear the stored history of songs
      */
@@ -353,11 +370,13 @@ class PlaylistImporter {
                 one: {
                     icon: '<i class="fas fa-check"></i>',
                     label: game.i18n.localize("PLI.ImportMusicLabel"),
-                    callback: () =>
+                    callback: () => {
+                        this._playlistStatusPrompt()
                         this.beginPlaylistImport(
                             game.settings.get("playlist_import", "source"),
-                            window.Azzu.SettingsTypes.DirectoryPicker.format(game.settings.get("playlist_import", "folderDir"))
-                        ),
+                            game.settings.get("playlist_import", "folderDir")
+                        )
+                    }
                 },
                 two: {
                     icon: '<i class="fas fa-times"></i>',
@@ -385,6 +404,8 @@ class PlaylistImporter {
 
         FilePicker.browse(source, path, options).then(async (resp) => {
             let localDirs = resp.dirs;
+            let finishedDirs = 0;
+            $('#total_playlists').html((localDirs.length));
             for (const dirName of localDirs) {
                 let success = await this._generatePlaylist(PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName)));
                 if (this.DEBUG) console.log(`TT: ${dirName}: ${success} on creating playlists`);
@@ -392,6 +413,7 @@ class PlaylistImporter {
 
             for (const dirName of localDirs) {
                 await this._getItemsFromDir(source, dirName, PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName)), options);
+                $('#finished_playlists').html(++finishedDirs);
             }
 
             if (this.DEBUG) console.log("Playlist-Importer: Operation Completed. Thank you!");
