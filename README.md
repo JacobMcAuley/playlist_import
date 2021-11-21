@@ -28,7 +28,7 @@ If you're like me, you probably enjoy amassing a large collection of songs to pl
 Please read the following, as it may answer any questions as to unexpected behavior.
 
 NOTE:
-1. Currently only .mp3, .mp4, .ogg, .wav, and .flac files are imported. All other types are excluded. 
+1. Currently only .mp3, .mp4, .ogg, .wav, .m4a and .flac files are imported. All other types are excluded. 
 1. Organization is force upon you! This means, that when you select your base directory in which to import, only folders within the base directory are checked, not the files. In otherwords, you must subdivide your music into folders inside the base directory.
 1. Songs added by playlist-importer will be excluded from being added again by the import function. This means, songs names should be unique! Make sure to avoid duplicate names across folders.
 1. Nested folders will result in unsuccessful importations. This will be addressed in future builds
