@@ -211,7 +211,9 @@ class PlaylistImporter {
 
     _generatePlaylist(playlistName) {
         return new Promise(async (resolve, reject) => {
-            const playlistExists = await game.playlists.contents.find((p) => p.name === playlistName);
+            const is08x = game.data.version.split(".")[1] === "8"
+            const playlistExists = is08x ? await game.playlists.entities.find((p) => p.name === playlistName) : await game.playlists.contents.find((p) => p.name === playlistName);
+
             if (!playlistExists) {
                 try {
                     await Playlist.create({
@@ -252,7 +254,8 @@ class PlaylistImporter {
         }
         logVolume = AudioHelper.inputToVolume(logVolume);
 
-        let playlist = game.playlists.contents.find((p) => p.name === playlistName);
+        const is08x = game.data.version.split(".")[1] === "8"
+        let playlist = is08x ? game.playlists.entities.find((p) => p.name === playlistName) : game.playlists.contents.find((p) => p.name === playlistName);
 
         return new Promise(async (resolve, reject) => {
             FilePicker.browse(source, path, options).then(
@@ -286,7 +289,11 @@ class PlaylistImporter {
         currentList[(playlistName + trackName).toLowerCase()] = true;
         await game.settings.set("playlist_import", "songs", currentList);
 
-        await playlist.createEmbeddedDocuments("PlaylistSound", [{ name: trackName, path: fileName, repeat: shouldRepeat, volume: logVolume }], {});
+        const is08x = game.data.version.split(".")[1] === "8"
+        if (is08x)
+            await playlist.createEmbeddedEntity("PlaylistSound", { name: trackName, path: fileName, repeat: shouldRepeat, volume: logVolume }, {});
+        else
+            await playlist.createEmbeddedDocuments("PlaylistSound", [{ name: trackName, path: fileName, repeat: shouldRepeat, volume: logVolume }], {});
     }
 
     /**
