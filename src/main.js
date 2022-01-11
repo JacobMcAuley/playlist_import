@@ -126,7 +126,7 @@ class PlaylistImporter {
     }
 
     /**
-     * Validates the audio extension to be of type mp3, wav, ogg, flac or webm.
+     * Validates the audio extension to be of type mp3, wav, ogg, flac, webm or m4a.
      * @private
      * @param {string} fileName
      */
@@ -135,7 +135,7 @@ class PlaylistImporter {
         let ext = fileName.split(".").pop();
         if (this.DEBUG) console.log(`Playlist-Importer: Extension is determined to be (${ext}).`);
 
-        return !!ext.match(/(mp3|wav|ogg|flac|webm)+/g);
+        return !!ext.match(/(mp3|wav|ogg|flac|webm|m4a)+/g);
 
     }
 
@@ -176,7 +176,7 @@ class PlaylistImporter {
         let words = [], small = ['a', 'an', 'at', 'and', 'but', 'by', 'for', 'if', 'nor', 'on', 'of', 'or', 'so', 'the', 'to', 'yet'];
         let regexReplace = new RegExp(game.settings.get("playlist_import", "customRegexDelete"));
         name = decodeURIComponent(name);
-        name = name.split(/(.mp3|.mp4|.wav|.ogg|.flac)+/g)[0]
+        name = name.split(/(.mp3|.mp4|.wav|.ogg|.flac|.m4a)+/g)[0]
             .replace(regexReplace, '')
             .replace(/[_]+/g, ' ');
 
