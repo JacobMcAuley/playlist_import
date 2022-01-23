@@ -59,13 +59,6 @@
     "changelog": "https://github.com/JacobMcAuley/playlist_import/blob/v1.7.2/changelog.md",
     "bugs": "https://github.com/JacobMcAuley/playlist_import/issues",
     "allowBugReporter": true,
-    "dependencies": [
-      {
-          "name": "sequencer"
-      },
-      {
-          "name": "warpgate"
-      }
-    ]
+    "dependencies": []
   }
   
