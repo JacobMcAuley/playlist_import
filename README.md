@@ -1,6 +1,3 @@
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/jacobmcauley/playlist_import) 
-![GitHub Releases](https://img.shields.io/github/downloads/JacobMcAuley/playlist_import/latest/total) 
-
 # 0.9.X And beyond
 
 For 0.9.X and beyond, I will only personally be maintaining the most recent version of foundry. In short, this means you may not get backwards compatibility for any breaking changes.
@@ -11,6 +8,19 @@ Fortunately, you should be able to use releases to download a compatible version
 Since the introduction of bulk import into Foundry, this module is mostly obsolete. It will be maintained because I still personally find it useful. The usecase of this module is mostly if you have several playlists and want to save yourself a few clicks. 
 
 # Playlist importer 
+
+![Latest Release Download Count](https://img.shields.io/github/downloads/JacobMcAuley/playlist_import/latest/module.zip?color=2b82fc&label=DOWNLOADS&style=for-the-badge) 
+
+[![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fplaylist_import&colorB=006400&style=for-the-badge)](https://forge-vtt.com/bazaar#package=playlist_import) 
+
+![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2FJacobMcAuley%2Fplaylist_import%2Fmaster%2Fmodule.json&label=Foundry%20Version&query=$.compatibleCoreVersion&colorB=orange&style=for-the-badge)
+
+![Latest Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2FJacobMcAuley%2Fplaylist_import%2Fmaster%2Fmodule.json&label=Latest%20Release&prefix=v&query=$.version&colorB=red&style=for-the-badge)
+
+[![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Fplaylist_import%2Fshield%2Fendorsements&style=for-the-badge)](https://www.foundryvtt-hub.com/package/playlist_import/)
+
+![GitHub all releases](https://img.shields.io/github/downloads/JacobMcAuley/playlist_import/total?style=for-the-badge)
+
 This module aims to simplify the process of adding multiple music tracks to Foundry VTT, allowing for bulk importation of songs.
 
 ![example](imgs/example.gif)
