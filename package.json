@@ -1,9 +1,9 @@
 {
   "private": true,
-  "name": "automated-evocations-variant",
-  "title": "Automated Evocations - Companion Manager Variant",
-  "description": "A user interface to manage companions with summoning animations and automated summoning for spells",
-  "version": "1.5.4",
+  "name": "playlist_import",
+  "title": "Playlist Importer",
+  "description": "Speeds up the process of importing your sounds",
+  "version": "1.7.2",
   "scripts": {
     "package": "gulp package",
     "build": "gulp clean && gulp build && gulp link",
@@ -13,7 +13,7 @@
     "lintfix": "eslint --fix --ext .ts,.js,.vue ./src",
     "prettier-format": "prettier --config .prettierrc --write \"./src/**/*.(ts|js|json|scss|css)\""
   },
-  "author": "",
+  "author": "Jacob McAuley",
   "license": "",
   "devDependencies": {
     "archiver": "^5.2.0",
