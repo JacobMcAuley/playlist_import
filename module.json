@@ -44,7 +44,7 @@
         }
     ],
     "scripts": [
-        "./config/config.js",
+        "./src/config.js",
         "./src/main.js"
     ],
     "styles": [],

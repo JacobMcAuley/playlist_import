@@ -211,8 +211,11 @@ class PlaylistImporter {
 
     _generatePlaylist(playlistName) {
         return new Promise(async (resolve, reject) => {
-            const is08x = game.data.version.split(".")[1] === "8"
-            const playlistExists = is08x ? await game.playlists.entities.find((p) => p.name === playlistName) : await game.playlists.contents.find((p) => p.name === playlistName);
+            // const is08x = game.data.version.split(".")[1] === "8"
+            // const playlistExists = is08x 
+            //     ? await game.playlists.entities.find((p) => p.name === playlistName) 
+            //     : await game.playlists.contents.find((p) => p.name === playlistName);
+            const playlistExists = await game.playlists.contents.find((p) => p.name === playlistName);
 
             if (!playlistExists) {
                 try {
@@ -254,8 +257,15 @@ class PlaylistImporter {
         }
         logVolume = AudioHelper.inputToVolume(logVolume);
 
-        const is08x = game.data.version.split(".")[1] === "8"
-        let playlist = is08x ? game.playlists.entities.find((p) => p.name === playlistName) : game.playlists.contents.find((p) => p.name === playlistName);
+        // const is08x = game.data.version.split(".")[1] === "8"
+        // let playlist = is08x 
+        //     ? game.playlists.entities.find((p) => p.name === playlistName) 
+        //     : game.playlists.contents.find((p) => p.name === playlistName);
+        let playlist = game.playlists.contents.find((p) => p.name === playlistName);
+
+        if(!playlist){
+            ui.notification?.warn("Cannot find a playlist with name '"+playlistName+"'");
+        }
 
         return new Promise(async (resolve, reject) => {
             FilePicker.browse(source, path, options).then(
@@ -289,11 +299,12 @@ class PlaylistImporter {
         currentList[(playlistName + trackName).toLowerCase()] = true;
         await game.settings.set("playlist_import", "songs", currentList);
 
-        const is08x = game.data.version.split(".")[1] === "8"
-        if (is08x)
-            await playlist.createEmbeddedEntity("PlaylistSound", { name: trackName, path: fileName, repeat: shouldRepeat, volume: logVolume }, {});
-        else
-            await playlist.createEmbeddedDocuments("PlaylistSound", [{ name: trackName, path: fileName, repeat: shouldRepeat, volume: logVolume }], {});
+        // const is08x = game.data.version.split(".")[1] === "8"
+        // if (is08x)
+        //     await playlist.createEmbeddedEntity("PlaylistSound", { name: trackName, path: fileName, repeat: shouldRepeat, volume: logVolume }, {});
+        // else
+        //     await playlist.createEmbeddedDocuments("PlaylistSound", [{ name: trackName, path: fileName, repeat: shouldRepeat, volume: logVolume }], {});
+        await playlist.createEmbeddedDocuments("PlaylistSound", [{ name: trackName, path: fileName, repeat: shouldRepeat, volume: logVolume }], {});
     }
 
     /**
@@ -403,23 +414,58 @@ class PlaylistImporter {
         if (source === "s3") {
             options["bucket"] = game.settings.get("playlist_import", "bucket");
         }
-
+        
         FilePicker.browse(source, path, options).then(async (resp) => {
-            let localDirs = resp.dirs;
-            let finishedDirs = 0;
-            $('#total_playlists').html((localDirs.length));
-            for (const dirName of localDirs) {
-                let success = await this._generatePlaylist(PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName)));
+            try{
+                let localDirs = resp.dirs || [];
+                let finishedDirs = 0;
+                // $('#total_playlists').html((localDirs.length));
+                let dirName = resp.target;
+                let playlistName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName))
+                let success = await this._generatePlaylist(playlistName);
                 if (this.DEBUG) console.log(`TT: ${dirName}: ${success} on creating playlists`);
-            }
+                await this._getItemsFromDir(source, dirName, playlistName, options);
 
-            for (const dirName of localDirs) {
-                await this._getItemsFromDir(source, dirName, PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName)), options);
+                for (const dirName of localDirs) {
+                    if( resp.target != dirName && !this._blackList.includes(dirName)){
+                        finishedDirs = this._searchOnSubFoler(source, dirName, options, playlistName, finishedDirs);
+                        this._blackList.push(dirName);
+                    }
+                }
+
                 $('#finished_playlists').html(++finishedDirs);
+                
+                $('#total_playlists').html(this._blackList.length);
+                if (this.DEBUG) console.log("Playlist-Importer: Operation Completed. Thank you!");
+                this._playlistCompletePrompt();
+            }finally{
+                this._blackList = [];
             }
+        });
+    }
 
-            if (this.DEBUG) console.log("Playlist-Importer: Operation Completed. Thank you!");
-            this._playlistCompletePrompt();
+    _blackList = [];
+
+    _searchOnSubFoler(source, path, options, dirNameParent,finishedDirs){
+        FilePicker.browse(source, path, options).then(async (resp) => {
+            let localDirs = resp.dirs || [];
+            // let finishedDirs = 0;
+            //$('#total_playlists').html((localDirs.length));
+            let dirName = resp.target;
+            let playlistName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName))
+            let dirNameCustom = dirNameParent ? dirNameParent + '_' + playlistName : playlistName;
+            let success = await this._generatePlaylist(dirNameCustom);
+            if (this.DEBUG) console.log(`TT: ${dirName}: ${success} on creating playlists`);
+            await this._getItemsFromDir(source, dirName, dirNameCustom, options);
+            // $('#finished_playlists').html(++finishedDirs);
+            
+            for (const dirName of localDirs) {
+                if( resp.target != dirName && !this._blackList.includes(dirName)){
+                    finishedDirs = this._searchOnSubFoler(source, dirName, options, dirNameCustom, finishedDirs);
+                    this._blackList.push(dirName);
+                }
+            }
+            return finishedDirs;
         });
     }
 }
