@@ -25,5 +25,7 @@
     "PLI.EnableDuplicateHint": "Checks during the importation process to see if duplicate songs exist, excluding them if true.",
     "PLI.CancelOperation": "Cancel",
     "PLI.customRegexDelete": "Reassign Regex",
-    "PLI.customRegexDeleteHint": "Adjust the regex to delete unnecessary based on personal preference. This is used in the first pass to remove things like '-' '_' and leading numbers."
+    "PLI.customRegexDeleteHint": "Adjust the regex to delete unnecessary based on personal preference. This is used in the first pass to remove things like '-' '_' and leading numbers.",
+    "PLI.ShouldOverridePlaylist": "Override playlist",
+    "PLI.ShouldOverridePlaylistHint": "If enabled if a playlist with the same name is founded during the import it will be override"
 }

@@ -91,7 +91,18 @@ class PlaylistImporterConfig {
                     default: "^\\d\\d+ *_*-* *",
                     type: String,
                 }
-            }
+            },
+            {
+                key: "shouldOverridePlaylist",
+                settings: {
+                    name: game.i18n.localize("PLI.ShouldOverridePlaylist"),
+                    hint: game.i18n.localize("PLI.ShouldOverridePlaylistHint"),
+                    type: Boolean,
+                    default: false,
+                    scope: "world",
+                    config: true,
+                }
+            },
         ]
 
     }

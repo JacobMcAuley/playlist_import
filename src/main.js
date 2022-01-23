@@ -215,8 +215,14 @@ class PlaylistImporter {
             // const playlistExists = is08x 
             //     ? await game.playlists.entities.find((p) => p.name === playlistName) 
             //     : await game.playlists.contents.find((p) => p.name === playlistName);
-            const playlistExists = await game.playlists.contents.find((p) => p.name === playlistName);
-
+            const playlistExists = game.playlists.contents.find((p) => p.name === playlistName);
+            if (playlistExists) {
+                let shouldOverridePlaylist = game.settings.get("playlist_import", "shouldOverridePlaylist");
+                if(shouldOverridePlaylist){
+                    await playlistExists.delete();
+                    playlistExists = false;
+                }
+            }
             if (!playlistExists) {
                 try {
                     await Playlist.create({
@@ -276,11 +282,21 @@ class PlaylistImporter {
                         if (valid) {
                             let trackName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(fileName));
                             let currentList = await game.settings.get("playlist_import", "songs");
-
-                            if (!dupCheck || currentList[(playlistName + trackName).toLowerCase()] != true) {
-                                // A weird way of saying always succeed if dupCheck is on otherwise see if the track is in the list
-                                if (this.DEBUG) console.log(`Playlist-importer: Song ${trackName} not in list.`);
-                                await this._addSong(currentList, trackName, fileName, playlistName, playlist, shouldRepeat, logVolume, shouldStream);
+                            const currentPlaylist = game.playlists.contents.find((playlist) => {
+                                return playlist && playlist.name == playlistName;
+                            });
+                            if(currentPlaylist){
+                                const currentSound = currentPlaylist.sounds.find((sound) => {
+                                    return sound && sound.name == trackName;
+                                });
+                                if(dupCheck && currentSound){
+                                    // DO NOTHING
+                                }else{
+                                // if (!dupCheck || currentList[(playlistName + trackName).toLowerCase()] != true) {
+                                    // A weird way of saying always succeed if dupCheck is on otherwise see if the track is in the list
+                                    if (this.DEBUG) console.log(`Playlist-importer: Song ${trackName} not in list.`);
+                                    await this._addSong(currentList, trackName, fileName, playlistName, playlist, shouldRepeat, logVolume, shouldStream);
+                                }
                             }
                         } else {
                             if (this.DEBUG)
