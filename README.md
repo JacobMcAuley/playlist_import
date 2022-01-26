@@ -1,6 +1,3 @@
-![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/jacobmcauley/playlist_import) 
-![GitHub Releases](https://img.shields.io/github/downloads/JacobMcAuley/playlist_import/latest/total) 
-
 # 0.9.X And beyond
 
 For 0.9.X and beyond, I will only personally be maintaining the most recent version of foundry. In short, this means you may not get backwards compatibility for any breaking changes.
@@ -11,6 +8,19 @@ Fortunately, you should be able to use releases to download a compatible version
 Since the introduction of bulk import into Foundry, this module is mostly obsolete. It will be maintained because I still personally find it useful. The usecase of this module is mostly if you have several playlists and want to save yourself a few clicks. 
 
 # Playlist importer 
+
+![Latest Release Download Count](https://img.shields.io/github/downloads/JacobMcAuley/playlist_import/latest/module.zip?color=2b82fc&label=DOWNLOADS&style=for-the-badge) 
+
+[![Forge Installs](https://img.shields.io/badge/dynamic/json?label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Fplaylist_import&colorB=006400&style=for-the-badge)](https://forge-vtt.com/bazaar#package=playlist_import) 
+
+![Foundry Core Compatible Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2FJacobMcAuley%2Fplaylist_import%2Fmaster%2Fmodule.json&label=Foundry%20Version&query=$.compatibleCoreVersion&colorB=orange&style=for-the-badge)
+
+![Latest Version](https://img.shields.io/badge/dynamic/json.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2FJacobMcAuley%2Fplaylist_import%2Fmaster%2Fmodule.json&label=Latest%20Release&prefix=v&query=$.version&colorB=red&style=for-the-badge)
+
+[![Foundry Hub Endorsements](https://img.shields.io/endpoint?logoColor=white&url=https%3A%2F%2Fwww.foundryvtt-hub.com%2Fwp-json%2Fhubapi%2Fv1%2Fpackage%2Fplaylist_import%2Fshield%2Fendorsements&style=for-the-badge)](https://www.foundryvtt-hub.com/package/playlist_import/)
+
+![GitHub all releases](https://img.shields.io/github/downloads/JacobMcAuley/playlist_import/total?style=for-the-badge)
+
 This module aims to simplify the process of adding multiple music tracks to Foundry VTT, allowing for bulk importation of songs.
 
 ![example](imgs/example.gif)
@@ -100,13 +110,87 @@ Auto-Installation Instructions:
     
 ```
 
+# Build
+
+## Install all packages
+
+```bash
+npm install
+```
+## npm build scripts
+
+### build
+
+will build the code and copy all necessary assets into the dist folder and make a symlink to install the result into your foundry data; create a
+`foundryconfig.json` file with your Foundry Data path.
+
+```json
+{
+  "dataPath": "~/.local/share/FoundryVTT/"
+}
+```
+
+`build` will build and set up a symlink between `dist` and your `dataPath`.
+
+```bash
+npm run-script build
+```
+
+### NOTE:
+
+You don't need to build the `foundryconfig.json` file you can just copy the content of the `dist` folder on the module folder under `modules` of Foundry
+
+### build:watch
+
+`build:watch` will build and watch for changes, rebuilding automatically.
+
+```bash
+npm run-script build:watch
+```
+
+### clean
+
+`clean` will remove all contents in the dist folder (but keeps the link from build:install).
+
+```bash
+npm run-script clean
+```
+### lint and lintfix
+
+`lint` launch the eslint process based on the configuration [here](./.eslintrc)
+
+```bash
+npm run-script lint
+```
+
+`lintfix` launch the eslint process with the fix argument
+
+```bash
+npm run-script lintfix
+```
+
+### prettier-format
+
+`prettier-format` launch the prettier plugin based on the configuration [here](./.prettierrc)
+
+```bash
+npm run-script prettier-format
+```
+
+### package
+
+`package` generates a zip file containing the contents of the dist folder generated previously with the `build` command. Useful for those who want to manually load the module or want to create their own release
+
+```bash
+npm run-script package
+```
+
 ### Attributions
 
 Thanks to Ariphaos for their help with creating a more user friendly naming convention when importing playlists! 
 
 Thanks to Sciguymjm for all the suggestions for improvements to the importer!
 Thanks to users JJBocanegra, Jlanatta, and JMMarchant, and mikkerlo for assisting in the development of Playlist Importer.
-
 
 ### Language Translations
 
