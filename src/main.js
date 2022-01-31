@@ -215,7 +215,7 @@ class PlaylistImporter {
       // const playlistExists = is08x
       //     ? await game.playlists.entities.find((p) => p.name === playlistName)
       //     : await game.playlists.contents.find((p) => p.name === playlistName);
-      const playlist = game.playlists.contents.find((p) => p.name === playlistName)
+      const playlist = game.playlists.contents.find((p) => p.name === playlistName);
       let playlistExists = playlist ? true : false;
       if (playlistExists) {
         let shouldOverridePlaylist = game.settings.get('playlist_import', 'shouldOverridePlaylist');
