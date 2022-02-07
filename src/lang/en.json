@@ -9,6 +9,8 @@
   "PLI.ImportMusicTitle": "Import from music directory?",
   "PLI.ImportMusicDescription": "Select either to import or cancel",
   "PLI.ImportMusicLabel": "Begin Import",
+  "PLI.Songs": "Songs",
+  "PLI.SongsHint": " ",
   "PLI.FolderDir": "Base music directory",
   "PLI.FolderDirHint": "Select a directory to serve as the base directory for music import",
   "PLI.SelectSource": "Select source:",
@@ -24,8 +26,12 @@
   "PLI.EnableDuplicate": "Song Duplicate Checker",
   "PLI.EnableDuplicateHint": "Checks during the importation process to see if duplicate songs exist, excluding them if true.",
   "PLI.CancelOperation": "Cancel",
-  "PLI.customRegexDelete": "Reassign Regex",
-  "PLI.customRegexDeleteHint": "Adjust the regex to delete unnecessary based on personal preference. This is used in the first pass to remove things like '-' '_' and leading numbers.",
+  "PLI.CustomRegexDelete": "Reassign Regex",
+  "PLI.CustomRegexDeleteHint": "Adjust the regex to delete unnecessary based on personal preference. This is used in the first pass to remove things like '-' '_' and leading numbers.",
   "PLI.ShouldOverridePlaylist": "Override playlist",
-  "PLI.ShouldOverridePlaylistHint": "If enabled if a playlist with the same name is founded during the import it will be override"
+  "PLI.ShouldOverridePlaylistHint": "If enabled if a playlist with the same name is founded during the import it will be override",
+  "PLI.ShouldDeletePlaylist": "Delete playlist before import",
+  "PLI.ShouldDeletePlaylistHint": "If enabled if a playlist has the flag of the 'playlist import module' it will be deleted before try the new import. This is useful for when you delete some folder on the disk and want to remove the old playlist on the game.",
+  "PLI.MaintainOriginalFolderName": "Maintain original folder name",
+  "PLI.MaintainOriginalFolderNameHint": "Instead using the hierarchy naming this setting will force to create a playlist with the name of the current folder so instead 'parent_child' will be 'child'"
 }
