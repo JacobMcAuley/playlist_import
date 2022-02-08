@@ -1,12 +1,3 @@
-# 0.9.X And beyond
-
-For 0.9.X and beyond, I will only personally be maintaining the most recent version of foundry. In short, this means you may not get backwards compatibility for any breaking changes.
-Fortunately, you should be able to use releases to download a compatible version if it exists.
-
-# 0.8.X Update
-
-Since the introduction of bulk import into Foundry, this module is mostly obsolete. It will be maintained because I still personally find it useful. The usecase of this module is mostly if you have several playlists and want to save yourself a few clicks. 
-
 # Playlist importer 
 
 ![Latest Release Download Count](https://img.shields.io/github/downloads/JacobMcAuley/playlist_import/latest/module.zip?color=2b82fc&label=DOWNLOADS&style=for-the-badge) 
@@ -25,21 +16,39 @@ This module aims to simplify the process of adding multiple music tracks to Foun
 
 ![example](imgs/example.gif)
 
-See an additional sample under long-example.gif!
+## Installation
+
+It's always easiest to install modules from the in game add-on browser.
+
+To install this module manually:
+1.  Inside the Foundry "Configuration and Setup" screen, click "Add-on Modules"
+2.  Click "Install Module"
+3.  In the "Manifest URL" field, paste the following url:
+`https://raw.githubusercontent.com/JacobMcAuley/playlist_import/master/module.json`
+4.  Click 'Install' and wait for installation to complete
+5.  Don't forget to enable the module in game using the "Manage Module" button
+
+# 0.9.X And beyond
+
+For 0.9.X and beyond, I will only personally be maintaining the most recent version of foundry. In short, this means you may not get backwards compatibility for any breaking changes.
+Fortunately, you should be able to use releases to download a compatible version if it exists.
+
+# 0.8.X Update
+
+Since the introduction of bulk import into Foundry, this module is mostly obsolete. It will be maintained because I still personally find it useful. The usecase of this module is mostly if you have several playlists and want to save yourself a few clicks. 
+
 ### Reasoning
 
 If you're like me, you probably enjoy amassing a large collection of songs to play for your players! However, importing your songs one at a time can be sluggish and time consuming. Playlist importer allows you to bulk import all of your songs!
 
 ### Features
 1. Allows for quick importation of songs into FVTT
-1. Only adds songs that haven't been added already (can be disabled) . NOTE: This applies only for songs added by Playlist-importer 
-
-
-### FVTT Version
-- Tested on FVTT v0.5.5. Due to using Setting-Extender this is a breaking update to previous versions. If you use a older version of playlist importer, do not update if you're not on v0.5.4+
-
+2. Only adds songs that haven't been added already (can be disabled) . NOTE: This applies only for songs added by Playlist-importer 
+3. Delete imported playlist
+4. Build playlist by following the hiearchy of folder or one paylist fr every folder
 
 ### It's a feature not a bug!
+
 Please read the following, as it may answer any questions as to unexpected behavior.
 
 NOTE:
@@ -49,25 +58,6 @@ NOTE:
 1. Nested folders will result in unsuccessful importations. This will be addressed in future builds
 1. For general efficiency questions, refer to the "Efficiency" section below. 
 1. Spaces in folder names should no longer cause issues. Please contact me if they cause trouble.
-
-
-
-### Installation Instructions
-
-To install playlist-import, do the following:
-
-1. [Download the zip file](https://github.com/JacobMcAuley/playlist_import/archive/master.zip)
-2. Extract the folder to your '/modules' folder in Foundry VTT. (location varies based off your path)
-3. Reload your application.
-4. Enable within FVTT
-
-Auto-Installation Instructions:
-
-1. Copy this link: https://raw.githubusercontent.com/JacobMcAuley/playlist_import/master/module.json
-2. Open FoundryVTT and navigate to Add-On Modules
-3. Select "Install Module" and paste link into textbox.
-4. Click "Install" and watch as the mod is installed!
-5. Enable within FVTT
 
 ### Usage
 
@@ -109,6 +99,21 @@ Auto-Installation Instructions:
     |     |        |----> just_kidding.mp4
     
 ```
+
+## Settings
+
+- **Songs:**
+- **Base music directory:** Select a directory to serve as the base directory for music import",
+- **Select source:** Options include ",
+- **S3 Bucket:** If using an s3 bucket, enter in the name of the bucket here.",
+- **Set repeat for tracks:** Should tracks be set to repeat by default?",
+- **Set stream for tracks:** Should tracks be set to stream by default?",
+- **Set default volume:** On a scale from 0.0 - 1.0",
+- **Song Duplicate Checker:** Checks during the importation process to see if duplicate songs exist, excluding them if true.",
+- **Reassign Regex:** Adjust the regex to delete unnecessary based on personal preference. This is used in the first pass to remove things like '-' '_' and leading numbers.",
+- **Override playlist:** If enabled if a playlist with the same name is founded during the import it will be override",
+- **Delete playlist before import:** If enabled if a playlist has the flag of the 'playlist import module' it will be deleted before try the new import. This is useful for when you delete some folder on the disk and want to remove the old playlist on the game.",
+- **Maintain original folder name:** Instead using the hierarchy naming this setting will force to create a playlist with the name of the current folder so instead 'parent_child' will be 'child'"
 
 # Build
 

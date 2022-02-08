@@ -15,12 +15,27 @@ class PlaylistImporterInitializer {
      */
 
     Hooks.on('renderPlaylistDirectory', (app, html, data) => {
-      const importPlaylistString = game.i18n.localize('PLI.ImportButton');
-      const importButton = $(`<button  style="min-width: 96%; margin: 10px 6px;">${importPlaylistString}</button>`);
+      html.find('.directory-footer')[0].style.display = 'inherit';
+      const importPlaylistString = game.i18n.localize(`${PLIMP.LANG}.ImportButton`);
+      const importButton = $(`<button  style="width: 48%;">${importPlaylistString}</button>`);
       if (game.user.isGM || game.user.can('SETTINGS_MODIFY')) {
         html.find('.directory-footer').append(importButton);
         importButton.click((ev) => {
           PLIMP.playlistImporter.playlistDirectoryInterface();
+        });
+      }
+      const deleteAllPlaylistString = game.i18n.localize(`${PLIMP.LANG}.DeleteAllButton`);
+      const deleteAllButton = $(`<button  style="width: 48%;">${deleteAllPlaylistString}</button>`);
+      if (game.user.isGM || game.user.can('SETTINGS_MODIFY')) {
+        html.find('.directory-footer').append(deleteAllButton);
+        deleteAllButton.click(async (ev) => {
+          let playlists = game.playlists.contents;
+          for (const playlist of playlists) {
+            const playlistHasFlag = playlist.getFlag(PLIMP.MODULENAME, 'isPlaylistImported');
+            if (playlistHasFlag && playlistHasFlag == true) {
+              await playlist.delete();
+            }
+          }
         });
       }
     });
@@ -66,7 +81,7 @@ class PlaylistImporterInitializer {
      * Appends a button onto the settings to clear playlist "Hashtable" memory.
      */
     Hooks.on('renderSettings', (app, html) => {
-      const clearMemoryString = game.i18n.localize('PLI.ClearMemory');
+      const clearMemoryString = game.i18n.localize(`${PLIMP.LANG}.ClearMemory`);
       const importButton = $(`<button>${clearMemoryString}</button>`);
       // For posterity.
       if (game.user.isGM || game.user.can('SETTINGS_MODIFY')) {
@@ -94,8 +109,8 @@ class PlaylistImporterInitializer {
     // let sources = new FilePicker().sources;
     // let options = Object.keys(sources);
     // game.settings.register(PLIMP.MODULENAME, 'source', {
-    //   name: game.i18n.localize('PLI.SelectSource'),
-    //   hint: `${game.i18n.localize('PLI.SelectSourceHint')} [${options}]`,
+    //   name: game.i18n.localize(`${PLIMP.LANG}.SelectSource`),
+    //   hint: `${game.i18n.localize(`${PLIMP.LANG}.SelectSourceHint`)} [${options}]`,
     //   type: String,
     //   default: 'data',
     //   scope: 'world',
@@ -237,7 +252,7 @@ class PlaylistImporter {
             mode: 0,
             playing: false,
           });
-          await playlist.setFlag(PLIMP.MODULENAME,'isPlaylistImported',true);
+          await playlist.setFlag(PLIMP.MODULENAME, 'isPlaylistImported', true);
           if (this.DEBUG) console.log(`Playlist-Importer: Successfully created playlist: ${playlistName}`);
           resolve(true);
         } catch (error) {
@@ -344,8 +359,8 @@ class PlaylistImporter {
    */
   _playlistCompletePrompt() {
     let playlistComplete = new Dialog({
-      title: game.i18n.localize('PLI.OperationFinishTitle'),
-      content: `<p>${game.i18n.localize('PLI.OpeartionFinishContent')}</p>`,
+      title: game.i18n.localize(`${PLIMP.LANG}.OperationFinishTitle`),
+      content: `<p>${game.i18n.localize(`${PLIMP.LANG}.OperationFinishContent`)}</p>`,
       buttons: {
         one: {
           icon: '<i class="fas fa-check"></i>',
@@ -389,15 +404,15 @@ class PlaylistImporter {
 
   clearMemoryInterface() {
     let clearMemoryPrompt = new Dialog({
-      title: game.i18n.localize('PLI.ClearMemoryTitle'),
-      content: `<p>${game.i18n.localize('PLI.ClearMemoryDescription')}</p>`,
+      title: game.i18n.localize(`${PLIMP.LANG}.ClearMemoryTitle`),
+      content: `<p>${game.i18n.localize(`${PLIMP.LANG}.ClearMemoryDescription`)}</p>`,
       buttons: {
         one: {
-          label: game.i18n.localize('PLI.ClearMemoryWarning'),
+          label: game.i18n.localize(`${PLIMP.LANG}.ClearMemoryWarning`),
           callback: () => this._clearSongHistory(),
         },
         two: {
-          label: game.i18n.localize('PLI.CancelOperation'),
+          label: game.i18n.localize(`${PLIMP.LANG}.CancelOperation`),
           callback: () => console.log('Playlist-Importer: Canceled'),
         },
       },
@@ -409,12 +424,12 @@ class PlaylistImporter {
 
   playlistDirectoryInterface() {
     let playlistPrompt = new Dialog({
-      title: game.i18n.localize('PLI.ImportMusicTitle'),
-      content: `<p>${game.i18n.localize('PLI.ImportMusicDescription')}</p>`,
+      title: game.i18n.localize(`${PLIMP.LANG}.ImportMusicTitle`),
+      content: `<p>${game.i18n.localize(`${PLIMP.LANG}.ImportMusicDescription`)}</p>`,
       buttons: {
         one: {
           icon: '<i class="fas fa-check"></i>',
-          label: game.i18n.localize('PLI.ImportMusicLabel'),
+          label: game.i18n.localize(`${PLIMP.LANG}.ImportMusicLabel`),
           callback: () => {
             this._playlistStatusPrompt();
             this.beginPlaylistImport(
@@ -425,7 +440,7 @@ class PlaylistImporter {
         },
         two: {
           icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize('PLI.CancelOperation'),
+          label: game.i18n.localize(`${PLIMP.LANG}.CancelOperation`),
           callback: () => console.log('Playlist-Importer: Canceled'),
         },
       },
@@ -442,11 +457,11 @@ class PlaylistImporter {
    */
   async beginPlaylistImport(source, path) {
     let shouldDeletePlaylist = game.settings.get(PLIMP.MODULENAME, 'shouldDeletePlaylist');
-    if(shouldDeletePlaylist){
+    if (shouldDeletePlaylist) {
       let playlists = game.playlists.contents;
-      for(const playlist of playlists){
-        const playlistHasFlag = playlist.getFlag(PLIMP.MODULENAME,'isPlaylistImported');
-        if(playlistHasFlag && playlistHasFlag == true){
+      for (const playlist of playlists) {
+        const playlistHasFlag = playlist.getFlag(PLIMP.MODULENAME, 'isPlaylistImported');
+        if (playlistHasFlag && playlistHasFlag == true) {
           await playlist.delete();
         }
       }
@@ -497,9 +512,15 @@ class PlaylistImporter {
       let dirName = resp.target;
       let playlistName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName));
       let dirNameCustom = dirNameParent ? dirNameParent + '_' + playlistName : playlistName;
-      if(game.settings.get(PLIMP.MODULENAME, 'maintainOriginalFolderName')){
+      if (game.settings.get(PLIMP.MODULENAME, 'maintainOriginalFolderName')) {
         dirNameCustom = playlistName;
       }
+      let myPlaylists = game.playlists.contents.filter((p) => p.name === dirNameCustom) || [];
+      let myPlaylistExists = myPlaylists.length > 0 ? true : false;
+      if (myPlaylistExists) {
+        dirNameCustom = dirNameCustom + '-' + myPlaylist.length;
+      }
+
       let success = await this._generatePlaylist(dirNameCustom);
       if (this.DEBUG) console.log(`TT: ${dirName}: ${success} on creating playlists`);
       await this._getItemsFromDir(source, dirName, dirNameCustom, options);
