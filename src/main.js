@@ -17,7 +17,7 @@ class PlaylistImporterInitializer {
     Hooks.on('renderPlaylistDirectory', (app, html, data) => {
       html.find('.directory-footer')[0].style.display = 'inherit';
       const importPlaylistString = game.i18n.localize(`${PLIMP.LANG}.ImportButton`);
-      const importButton = $(`<button  style="width: 48%;">${importPlaylistString}</button>`);
+      const importButton = $(`<button  style="width: 50%;">${importPlaylistString}</button>`);
       if (game.user.isGM || game.user.can('SETTINGS_MODIFY')) {
         html.find('.directory-footer').append(importButton);
         importButton.click((ev) => {
@@ -25,7 +25,7 @@ class PlaylistImporterInitializer {
         });
       }
       const deleteAllPlaylistString = game.i18n.localize(`${PLIMP.LANG}.DeleteAllButton`);
-      const deleteAllButton = $(`<button  style="width: 48%;">${deleteAllPlaylistString}</button>`);
+      const deleteAllButton = $(`<button  style="width: 50%;">${deleteAllPlaylistString}</button>`);
       if (game.user.isGM || game.user.can('SETTINGS_MODIFY')) {
         html.find('.directory-footer').append(deleteAllButton);
         deleteAllButton.click(async (ev) => {
