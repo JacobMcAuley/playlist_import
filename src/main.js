@@ -1,7 +1,7 @@
 class PlaylistImporterInitializer {
   constructor() {}
 
-  static initalize() {
+  static initialize() {
     PlaylistImporterInitializer.hookReady();
     PlaylistImporterInitializer.hookRenderPlaylistDirectory();
     PlaylistImporterInitializer.hookRenderSettings();
@@ -15,19 +15,34 @@ class PlaylistImporterInitializer {
      */
 
     Hooks.on('renderPlaylistDirectory', (app, html, data) => {
-      const importPlaylistString = game.i18n.localize('PLI.ImportButton');
-      const importButton = $(`<button  style="min-width: 96%; margin: 10px 6px;">${importPlaylistString}</button>`);
+      html.find('.directory-footer')[0].style.display = 'inherit';
+      const importPlaylistString = game.i18n.localize(`${PLIMP.LANG}.ImportButton`);
+      const importButton = $(`<button  style="width: 50%;">${importPlaylistString}</button>`);
       if (game.user.isGM || game.user.can('SETTINGS_MODIFY')) {
         html.find('.directory-footer').append(importButton);
         importButton.click((ev) => {
           PLIMP.playlistImporter.playlistDirectoryInterface();
         });
       }
+      const deleteAllPlaylistString = game.i18n.localize(`${PLIMP.LANG}.DeleteAllButton`);
+      const deleteAllButton = $(`<button  style="width: 50%;">${deleteAllPlaylistString}</button>`);
+      if (game.user.isGM || game.user.can('SETTINGS_MODIFY')) {
+        html.find('.directory-footer').append(deleteAllButton);
+        deleteAllButton.click(async (ev) => {
+          let playlists = game.playlists.contents;
+          for (const playlist of playlists) {
+            const playlistHasFlag = playlist.getFlag(PLIMP.MODULENAME, 'isPlaylistImported');
+            if (playlistHasFlag && playlistHasFlag == true) {
+              await playlist.delete();
+            }
+          }
+        });
+      }
     });
   }
 
   static _removeSound(playlistName, soundNames) {
-    let currentList = game.settings.get('playlist_import', 'songs');
+    let currentList = game.settings.get(PLIMP.MODULENAME, 'songs');
     soundNames.forEach((soundName) => {
       let trackName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(soundName));
       let mergedName = (playlistName + trackName).toLowerCase();
@@ -37,7 +52,7 @@ class PlaylistImporterInitializer {
         }
       }
     });
-    game.settings.set('playlist_import', 'songs', currentList);
+    game.settings.set(PLIMP.MODULENAME, 'songs', currentList);
   }
 
   static hookDeletePlaylist() {
@@ -66,7 +81,7 @@ class PlaylistImporterInitializer {
      * Appends a button onto the settings to clear playlist "Hashtable" memory.
      */
     Hooks.on('renderSettings', (app, html) => {
-      const clearMemoryString = game.i18n.localize('PLI.ClearMemory');
+      const clearMemoryString = game.i18n.localize(`${PLIMP.LANG}.ClearMemory`);
       const importButton = $(`<button>${clearMemoryString}</button>`);
       // For posterity.
       if (game.user.isGM || game.user.can('SETTINGS_MODIFY')) {
@@ -86,20 +101,21 @@ class PlaylistImporterInitializer {
   }
 
   static _registerSettings() {
-    PlaylistImporterConfig.initializeConfigParams();
-    PLIMP.PLAYLISTCONFIG.forEach((setting) => {
-      game.settings.register(PLIMP.MODULENAME, setting.key, setting.settings);
-    });
-    let sources = new FilePicker().sources;
-    let options = Object.keys(sources);
-    game.settings.register('playlist_import', 'source', {
-      name: game.i18n.localize('PLI.SelectSource'),
-      hint: `${game.i18n.localize('PLI.SelectSourceHint')} [${options}]`,
-      type: String,
-      default: 'data',
-      scope: 'world',
-      config: true,
-    });
+    PlaylistImporterConfig.registerSettings();
+    // PlaylistImporterConfig.initializeConfigParams();
+    // PLIMP.PLAYLISTCONFIG.forEach((setting) => {
+    //   game.settings.register(PLIMP.MODULENAME, setting.key, setting.settings);
+    // });
+    // let sources = new FilePicker().sources;
+    // let options = Object.keys(sources);
+    // game.settings.register(PLIMP.MODULENAME, 'source', {
+    //   name: game.i18n.localize(`${PLIMP.LANG}.SelectSource`),
+    //   hint: `${game.i18n.localize(`${PLIMP.LANG}.SelectSourceHint`)} [${options}]`,
+    //   type: String,
+    //   default: 'data',
+    //   scope: 'world',
+    //   config: true,
+    // });
   }
 }
 
@@ -173,7 +189,7 @@ class PlaylistImporter {
   static _convertToUserFriendly(name) {
     let words = [],
       small = ['a', 'an', 'at', 'and', 'but', 'by', 'for', 'if', 'nor', 'on', 'of', 'or', 'so', 'the', 'to', 'yet'];
-    let regexReplace = new RegExp(game.settings.get('playlist_import', 'customRegexDelete'));
+    let regexReplace = new RegExp(game.settings.get(PLIMP.MODULENAME, 'customRegexDelete'));
     name = decodeURIComponent(name);
     name = name
       .split(/(.mp3|.mp4|.wav|.ogg|.flac|.m4a)+/g)[0]
@@ -215,10 +231,10 @@ class PlaylistImporter {
       // const playlistExists = is08x
       //     ? await game.playlists.entities.find((p) => p.name === playlistName)
       //     : await game.playlists.contents.find((p) => p.name === playlistName);
-      const playlist = game.playlists.contents.find((p) => p.name === playlistName);
+      let playlist = game.playlists.contents.find((p) => p.name === playlistName);
       let playlistExists = playlist ? true : false;
       if (playlistExists) {
-        let shouldOverridePlaylist = game.settings.get('playlist_import', 'shouldOverridePlaylist');
+        let shouldOverridePlaylist = game.settings.get(PLIMP.MODULENAME, 'shouldOverridePlaylist');
         if (shouldOverridePlaylist) {
           await playlist.delete();
         }
@@ -226,7 +242,7 @@ class PlaylistImporter {
       }
       if (!playlistExists) {
         try {
-          await Playlist.create({
+          playlist = await Playlist.create({
             name: playlistName,
             permission: {
               default: 0,
@@ -236,6 +252,7 @@ class PlaylistImporter {
             mode: 0,
             playing: false,
           });
+          await playlist.setFlag(PLIMP.MODULENAME, 'isPlaylistImported', true);
           if (this.DEBUG) console.log(`Playlist-Importer: Successfully created playlist: ${playlistName}`);
           resolve(true);
         } catch (error) {
@@ -254,10 +271,10 @@ class PlaylistImporter {
    */
 
   _getItemsFromDir(source, path, playlistName, options) {
-    let dupCheck = game.settings.get('playlist_import', 'enableDuplicateChecking');
-    let shouldRepeat = game.settings.get('playlist_import', 'shouldRepeat');
-    let shouldStream = game.settings.get('playlist_import', 'shouldStream');
-    let logVolume = parseFloat(game.settings.get('playlist_import', 'logVolume'));
+    let dupCheck = game.settings.get(PLIMP.MODULENAME, 'enableDuplicateChecking');
+    let shouldRepeat = game.settings.get(PLIMP.MODULENAME, 'shouldRepeat');
+    let shouldStream = game.settings.get(PLIMP.MODULENAME, 'shouldStream');
+    let logVolume = parseFloat(game.settings.get(PLIMP.MODULENAME, 'logVolume'));
     if (isNaN(logVolume)) {
       if (this.DEBUG) console.log('Invalid type logVolume');
       return;
@@ -282,7 +299,7 @@ class PlaylistImporter {
             const valid = await this._validateFileType(fileName);
             if (valid) {
               let trackName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(fileName));
-              let currentList = await game.settings.get('playlist_import', 'songs');
+              let currentList = await game.settings.get(PLIMP.MODULENAME, 'songs');
               const currentPlaylist = game.playlists.contents.find((playlist) => {
                 return playlist && playlist.name == playlistName;
               });
@@ -323,7 +340,7 @@ class PlaylistImporter {
 
   async _addSong(currentList, trackName, fileName, playlistName, playlist, shouldRepeat, logVolume, shouldStream) {
     currentList[(playlistName + trackName).toLowerCase()] = true;
-    await game.settings.set('playlist_import', 'songs', currentList);
+    await game.settings.set(PLIMP.MODULENAME, 'songs', currentList);
 
     // const is08x = game.data.version.split(".")[1] === "8"
     // if (is08x)
@@ -342,8 +359,8 @@ class PlaylistImporter {
    */
   _playlistCompletePrompt() {
     let playlistComplete = new Dialog({
-      title: game.i18n.localize('PLI.OperationFinishTitle'),
-      content: `<p>${game.i18n.localize('PLI.OpeartionFinishContent')}</p>`,
+      title: game.i18n.localize(`${PLIMP.LANG}.OperationFinishTitle`),
+      content: `<p>${game.i18n.localize(`${PLIMP.LANG}.OperationFinishContent`)}</p>`,
       buttons: {
         one: {
           icon: '<i class="fas fa-check"></i>',
@@ -378,7 +395,7 @@ class PlaylistImporter {
    * A helper function designed to clear the stored history of songs
    */
   _clearSongHistory() {
-    game.settings.set('playlist_import', 'songs', {});
+    game.settings.set(PLIMP.MODULENAME, 'songs', {});
   }
 
   /*  --------------------------------------  */
@@ -387,15 +404,15 @@ class PlaylistImporter {
 
   clearMemoryInterface() {
     let clearMemoryPrompt = new Dialog({
-      title: game.i18n.localize('PLI.ClearMemoryTitle'),
-      content: `<p>${game.i18n.localize('PLI.ClearMemoryDescription')}</p>`,
+      title: game.i18n.localize(`${PLIMP.LANG}.ClearMemoryTitle`),
+      content: `<p>${game.i18n.localize(`${PLIMP.LANG}.ClearMemoryDescription`)}</p>`,
       buttons: {
         one: {
-          label: game.i18n.localize('PLI.ClearMemoryWarning'),
+          label: game.i18n.localize(`${PLIMP.LANG}.ClearMemoryWarning`),
           callback: () => this._clearSongHistory(),
         },
         two: {
-          label: game.i18n.localize('PLI.CancelOperation'),
+          label: game.i18n.localize(`${PLIMP.LANG}.CancelOperation`),
           callback: () => console.log('Playlist-Importer: Canceled'),
         },
       },
@@ -407,23 +424,23 @@ class PlaylistImporter {
 
   playlistDirectoryInterface() {
     let playlistPrompt = new Dialog({
-      title: game.i18n.localize('PLI.ImportMusicTitle'),
-      content: `<p>${game.i18n.localize('PLI.ImportMusicDescription')}</p>`,
+      title: game.i18n.localize(`${PLIMP.LANG}.ImportMusicTitle`),
+      content: `<p>${game.i18n.localize(`${PLIMP.LANG}.ImportMusicDescription`)}</p>`,
       buttons: {
         one: {
           icon: '<i class="fas fa-check"></i>',
-          label: game.i18n.localize('PLI.ImportMusicLabel'),
+          label: game.i18n.localize(`${PLIMP.LANG}.ImportMusicLabel`),
           callback: () => {
             this._playlistStatusPrompt();
             this.beginPlaylistImport(
-              game.settings.get('playlist_import', 'source'),
-              game.settings.get('playlist_import', 'folderDir'),
+              game.settings.get(PLIMP.MODULENAME, 'source'),
+              game.settings.get(PLIMP.MODULENAME, 'folderDir'),
             );
           },
         },
         two: {
           icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize('PLI.CancelOperation'),
+          label: game.i18n.localize(`${PLIMP.LANG}.CancelOperation`),
           callback: () => console.log('Playlist-Importer: Canceled'),
         },
       },
@@ -439,10 +456,21 @@ class PlaylistImporter {
    * @param {string} path
    */
   async beginPlaylistImport(source, path) {
+    let shouldDeletePlaylist = game.settings.get(PLIMP.MODULENAME, 'shouldDeletePlaylist');
+    if (shouldDeletePlaylist) {
+      let playlists = game.playlists.contents;
+      for (const playlist of playlists) {
+        const playlistHasFlag = playlist.getFlag(PLIMP.MODULENAME, 'isPlaylistImported');
+        if (playlistHasFlag && playlistHasFlag == true) {
+          await playlist.delete();
+        }
+      }
+    }
+
     //const fs = require("fs");
     let options = {};
     if (source === 's3') {
-      options['bucket'] = game.settings.get('playlist_import', 'bucket');
+      options['bucket'] = game.settings.get(PLIMP.MODULENAME, 'bucket');
     }
 
     FilePicker.browse(source, path, options).then(async (resp) => {
@@ -484,6 +512,15 @@ class PlaylistImporter {
       let dirName = resp.target;
       let playlistName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName));
       let dirNameCustom = dirNameParent ? dirNameParent + '_' + playlistName : playlistName;
+      if (game.settings.get(PLIMP.MODULENAME, 'maintainOriginalFolderName')) {
+        dirNameCustom = playlistName;
+      }
+      let myPlaylists = game.playlists.contents.filter((p) => p.name === dirNameCustom) || [];
+      let myPlaylistExists = myPlaylists.length > 0 ? true : false;
+      if (myPlaylistExists) {
+        dirNameCustom = dirNameCustom + '-' + myPlaylist.length;
+      }
+
       let success = await this._generatePlaylist(dirNameCustom);
       if (this.DEBUG) console.log(`TT: ${dirName}: ${success} on creating playlists`);
       await this._getItemsFromDir(source, dirName, dirNameCustom, options);
@@ -500,4 +537,4 @@ class PlaylistImporter {
   }
 }
 
-PlaylistImporterInitializer.initalize();
+PlaylistImporterInitializer.initialize();
