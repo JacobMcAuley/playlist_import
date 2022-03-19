@@ -1,3 +1,7 @@
+## 1.7.4
+
+- Some clean up, and bug fix a typo
+
 ## 1.7.3
 
 - A bunchof bug fixing
