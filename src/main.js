@@ -518,7 +518,7 @@ class PlaylistImporter {
       const myPlaylists = game.playlists?.contents.filter((p) => p.name === dirNameCustom) || [];
       const myPlaylistExists = myPlaylists.length > 0 ? true : false;
       if (myPlaylistExists) {
-        dirNameCustom = dirNameCustom + '-' + myPlaylist.length;
+        dirNameCustom = dirNameCustom + '-' + myPlaylists.length;
       }
 
       const success = await this._generatePlaylist(dirNameCustom);

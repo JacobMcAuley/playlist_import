@@ -15,6 +15,11 @@
 
 This module aims to simplify the process of adding multiple music tracks to Foundry VTT, allowing for bulk importation of songs.
 
+If you're like me, you probably enjoy amassing a large collection of songs to play for your players! However, importing your songs one at a time can be sluggish and time consuming. Playlist importer allows you to bulk import all of your songs!
+
+I will only personally be maintaining the most recent version of foundry. In short, this means you may not get backwards compatibility for any breaking changes.
+Fortunately, you should be able to use releases to download a compatible version if it exists.
+
 ![example](imgs/example.gif)
 
 ## Installation
@@ -29,20 +34,12 @@ To install this module manually:
 4.  Click 'Install' and wait for installation to complete
 5.  Don't forget to enable the module in game using the "Manage Module" button
 
-# 0.9.X And beyond
+## Known issue
 
-For 0.9.X and beyond, I will only personally be maintaining the most recent version of foundry. In short, this means you may not get backwards compatibility for any breaking changes.
-Fortunately, you should be able to use releases to download a compatible version if it exists.
-
-# 0.8.X Update
-
-Since the introduction of bulk import into Foundry, this module is mostly obsolete. It will be maintained because I still personally find it useful. The usecase of this module is mostly if you have several playlists and want to save yourself a few clicks. 
-
-### Reasoning
-
-If you're like me, you probably enjoy amassing a large collection of songs to play for your players! However, importing your songs one at a time can be sluggish and time consuming. Playlist importer allows you to bulk import all of your songs!
+- The dialog need some very adjustament, for now just ignore whart you see, for lack of the time on developer side, anyone is welcome to open a PR with a loading dialog.
 
 ### Features
+
 1. Allows for quick importation of songs into FVTT
 2. Only adds songs that haven't been added already (can be disabled) . NOTE: This applies only for songs added by Playlist-importer 
 3. Delete imported playlist
