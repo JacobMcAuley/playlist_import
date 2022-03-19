@@ -18,18 +18,18 @@ class PlaylistImporterInitializer {
       html.find('.directory-footer')[0].style.display = 'inherit';
       const importPlaylistString = game.i18n.localize(`${PLIMP.LANG}.ImportButton`);
       const importButton = $(`<button  style="width: 50%;">${importPlaylistString}</button>`);
-      if (game.user.isGM || game.user.can('SETTINGS_MODIFY')) {
+      if (game.user?.isGM || game.user?.can('SETTINGS_MODIFY')) {
         html.find('.directory-footer').append(importButton);
-        importButton.click((ev) => {
+        importButton.on('click', (ev) => {
           PLIMP.playlistImporter.playlistDirectoryInterface();
         });
       }
       const deleteAllPlaylistString = game.i18n.localize(`${PLIMP.LANG}.DeleteAllButton`);
       const deleteAllButton = $(`<button  style="width: 50%;">${deleteAllPlaylistString}</button>`);
-      if (game.user.isGM || game.user.can('SETTINGS_MODIFY')) {
+      if (game.user?.isGM || game.user?.can('SETTINGS_MODIFY')) {
         html.find('.directory-footer').append(deleteAllButton);
-        deleteAllButton.click(async (ev) => {
-          let playlists = game.playlists.contents;
+        deleteAllButton.on('click', async (ev) => {
+          const playlists = game.playlists?.contents;
           for (const playlist of playlists) {
             const playlistHasFlag = playlist.getFlag(PLIMP.MODULENAME, 'isPlaylistImported');
             if (playlistHasFlag && playlistHasFlag == true) {
@@ -42,10 +42,10 @@ class PlaylistImporterInitializer {
   }
 
   static _removeSound(playlistName, soundNames) {
-    let currentList = game.settings.get(PLIMP.MODULENAME, 'songs');
+    const currentList = game.settings.get(PLIMP.MODULENAME, 'songs');
     soundNames.forEach((soundName) => {
-      let trackName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(soundName));
-      let mergedName = (playlistName + trackName).toLowerCase();
+      const trackName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(soundName));
+      const mergedName = (playlistName + trackName).toLowerCase();
       if (trackName && playlistName) {
         if (currentList[mergedName]) {
           delete currentList[mergedName];
@@ -57,9 +57,9 @@ class PlaylistImporterInitializer {
 
   static hookDeletePlaylist() {
     Hooks.on('deletePlaylist', (playlist, flags, id) => {
-      let playlistName = playlist.name;
-      let soundObjects = playlist.sounds;
-      let sounds = [];
+      const playlistName = playlist.name;
+      const soundObjects = playlist.sounds;
+      const sounds = [];
       for (let i = 0; i < soundObjects.length; ++i) {
         sounds.push(soundObjects[i].path);
       }
@@ -70,8 +70,8 @@ class PlaylistImporterInitializer {
 
   static hookDeletePlaylistSound() {
     Hooks.on('deletePlaylistSound', (playlist, data, flags, id) => {
-      let playlistName = playlist.data.name;
-      let soundName = data.path;
+      const playlistName = playlist.data.name;
+      const soundName = data.path;
       PlaylistImporterInitializer._removeSound(playlistName, [soundName]);
     });
   }
@@ -84,7 +84,7 @@ class PlaylistImporterInitializer {
       const clearMemoryString = game.i18n.localize(`${PLIMP.LANG}.ClearMemory`);
       const importButton = $(`<button>${clearMemoryString}</button>`);
       // For posterity.
-      if (game.user.isGM || game.user.can('SETTINGS_MODIFY')) {
+      if (game.user?.isGM || game.user?.can('SETTINGS_MODIFY')) {
         html.find("button[data-action='players']").after(importButton);
         importButton.click((ev) => {
           PLIMP.playlistImporter.clearMemoryInterface();
@@ -147,7 +147,7 @@ class PlaylistImporter {
    */
 
   _validateFileType(fileName) {
-    let ext = fileName.split('.').pop();
+    const ext = fileName.split('.').pop();
     if (this.DEBUG) console.log(`Playlist-Importer: Extension is determined to be (${ext}).`);
 
     return !!ext.match(/(mp3|wav|ogg|flac|webm|m4a)+/g);
@@ -165,8 +165,8 @@ class PlaylistImporter {
    * @private
    */
   static _convertCamelCase(match, p1, p2, p3, offset, input_string) {
-    let replace,
-      small = ['a', 'an', 'at', 'and', 'but', 'by', 'for', 'if', 'nor', 'on', 'of', 'or', 'so', 'the', 'to', 'yet'];
+    let replace;
+    const small = ['a', 'an', 'at', 'and', 'but', 'by', 'for', 'if', 'nor', 'on', 'of', 'or', 'so', 'the', 'to', 'yet'];
 
     if (p3) {
       if (small.includes(p2.toLowerCase())) {
@@ -187,9 +187,9 @@ class PlaylistImporter {
    */
 
   static _convertToUserFriendly(name) {
-    let words = [],
-      small = ['a', 'an', 'at', 'and', 'but', 'by', 'for', 'if', 'nor', 'on', 'of', 'or', 'so', 'the', 'to', 'yet'];
-    let regexReplace = new RegExp(game.settings.get(PLIMP.MODULENAME, 'customRegexDelete'));
+    let words = [];
+    const small = ['a', 'an', 'at', 'and', 'but', 'by', 'for', 'if', 'nor', 'on', 'of', 'or', 'so', 'the', 'to', 'yet'];
+    const regexReplace = new RegExp(game.settings?.get(PLIMP.MODULENAME, 'customRegexDelete'));
     name = decodeURIComponent(name);
     name = name
       .split(/(.mp3|.mp4|.wav|.ogg|.flac|.m4a)+/g)[0]
@@ -231,10 +231,10 @@ class PlaylistImporter {
       // const playlistExists = is08x
       //     ? await game.playlists.entities.find((p) => p.name === playlistName)
       //     : await game.playlists.contents.find((p) => p.name === playlistName);
-      let playlist = game.playlists.contents.find((p) => p.name === playlistName);
+      let playlist = game.playlists?.contents.find((p) => p.name === playlistName);
       let playlistExists = playlist ? true : false;
       if (playlistExists) {
-        let shouldOverridePlaylist = game.settings.get(PLIMP.MODULENAME, 'shouldOverridePlaylist');
+        const shouldOverridePlaylist = game.settings?.get(PLIMP.MODULENAME, 'shouldOverridePlaylist');
         if (shouldOverridePlaylist) {
           await playlist.delete();
         }
@@ -252,7 +252,7 @@ class PlaylistImporter {
             mode: 0,
             playing: false,
           });
-          await playlist.setFlag(PLIMP.MODULENAME, 'isPlaylistImported', true);
+          await playlist?.setFlag(PLIMP.MODULENAME, 'isPlaylistImported', true);
           if (this.DEBUG) console.log(`Playlist-Importer: Successfully created playlist: ${playlistName}`);
           resolve(true);
         } catch (error) {
@@ -271,10 +271,10 @@ class PlaylistImporter {
    */
 
   _getItemsFromDir(source, path, playlistName, options) {
-    let dupCheck = game.settings.get(PLIMP.MODULENAME, 'enableDuplicateChecking');
-    let shouldRepeat = game.settings.get(PLIMP.MODULENAME, 'shouldRepeat');
-    let shouldStream = game.settings.get(PLIMP.MODULENAME, 'shouldStream');
-    let logVolume = parseFloat(game.settings.get(PLIMP.MODULENAME, 'logVolume'));
+    const dupCheck = game.settings.get(PLIMP.MODULENAME, 'enableDuplicateChecking');
+    const shouldRepeat = game.settings.get(PLIMP.MODULENAME, 'shouldRepeat');
+    const shouldStream = game.settings.get(PLIMP.MODULENAME, 'shouldStream');
+    let logVolume = parseFloat(game.settings?.get(PLIMP.MODULENAME, 'logVolume'));
     if (isNaN(logVolume)) {
       if (this.DEBUG) console.log('Invalid type logVolume');
       return;
@@ -285,22 +285,22 @@ class PlaylistImporter {
     // let playlist = is08x
     //     ? game.playlists.entities.find((p) => p.name === playlistName)
     //     : game.playlists.contents.find((p) => p.name === playlistName);
-    let playlist = game.playlists.contents.find((p) => p.name === playlistName);
+    const playlist = game.playlists?.contents.find((p) => p.name === playlistName);
 
     if (!playlist) {
-      ui.notification?.warn("Cannot find a playlist with name '" + playlistName + "'");
+      ui.notifications?.warn("Cannot find a playlist with name '" + playlistName + "'");
     }
 
     return new Promise(async (resolve, reject) => {
       FilePicker.browse(source, path, options).then(
         async function (resp) {
-          let localFiles = resp.files;
+          const localFiles = resp.files;
           for (const fileName of localFiles) {
             const valid = await this._validateFileType(fileName);
             if (valid) {
-              let trackName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(fileName));
-              let currentList = await game.settings.get(PLIMP.MODULENAME, 'songs');
-              const currentPlaylist = game.playlists.contents.find((playlist) => {
+              const trackName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(fileName));
+              const currentList = await game.settings.get(PLIMP.MODULENAME, 'songs');
+              const currentPlaylist = game.playlists?.contents.find((playlist) => {
                 return playlist && playlist.name == playlistName;
               });
               if (currentPlaylist) {
@@ -358,7 +358,7 @@ class PlaylistImporter {
    * A helper function designed to prompt the player of task completion.
    */
   _playlistCompletePrompt() {
-    let playlistComplete = new Dialog({
+    const playlistComplete = new Dialog({
       title: game.i18n.localize(`${PLIMP.LANG}.OperationFinishTitle`),
       content: `<p>${game.i18n.localize(`${PLIMP.LANG}.OperationFinishContent`)}</p>`,
       buttons: {
@@ -375,7 +375,7 @@ class PlaylistImporter {
   }
 
   _playlistStatusPrompt() {
-    let playlistComplete = new Dialog({
+    const playlistComplete = new Dialog({
       title: 'Status Update',
       content: `<p>Number of playlists completed <span id="finished_playlists">0</span>/<span id="total_playlists">0</span></p>`,
       buttons: {
@@ -403,7 +403,7 @@ class PlaylistImporter {
   /*  --------------------------------------  */
 
   clearMemoryInterface() {
-    let clearMemoryPrompt = new Dialog({
+    const clearMemoryPrompt = new Dialog({
       title: game.i18n.localize(`${PLIMP.LANG}.ClearMemoryTitle`),
       content: `<p>${game.i18n.localize(`${PLIMP.LANG}.ClearMemoryDescription`)}</p>`,
       buttons: {
@@ -423,7 +423,7 @@ class PlaylistImporter {
   }
 
   playlistDirectoryInterface() {
-    let playlistPrompt = new Dialog({
+    const playlistPrompt = new Dialog({
       title: game.i18n.localize(`${PLIMP.LANG}.ImportMusicTitle`),
       content: `<p>${game.i18n.localize(`${PLIMP.LANG}.ImportMusicDescription`)}</p>`,
       buttons: {
@@ -456,9 +456,9 @@ class PlaylistImporter {
    * @param {string} path
    */
   async beginPlaylistImport(source, path) {
-    let shouldDeletePlaylist = game.settings.get(PLIMP.MODULENAME, 'shouldDeletePlaylist');
+    const shouldDeletePlaylist = game.settings.get(PLIMP.MODULENAME, 'shouldDeletePlaylist');
     if (shouldDeletePlaylist) {
-      let playlists = game.playlists.contents;
+      const playlists = game.playlists?.contents;
       for (const playlist of playlists) {
         const playlistHasFlag = playlist.getFlag(PLIMP.MODULENAME, 'isPlaylistImported');
         if (playlistHasFlag && playlistHasFlag == true) {
@@ -468,19 +468,19 @@ class PlaylistImporter {
     }
 
     //const fs = require("fs");
-    let options = {};
+    const options = {};
     if (source === 's3') {
       options['bucket'] = game.settings.get(PLIMP.MODULENAME, 'bucket');
     }
 
     FilePicker.browse(source, path, options).then(async (resp) => {
       try {
-        let localDirs = resp.dirs || [];
+        const localDirs = resp.dirs || [];
         let finishedDirs = 0;
         // $('#total_playlists').html((localDirs.length));
-        let dirName = resp.target;
-        let playlistName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName));
-        let success = await this._generatePlaylist(playlistName);
+        const dirName = resp.target;
+        const playlistName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName));
+        const success = await this._generatePlaylist(playlistName);
         if (this.DEBUG) console.log(`TT: ${dirName}: ${success} on creating playlists`);
         await this._getItemsFromDir(source, dirName, playlistName, options);
 
@@ -506,22 +506,22 @@ class PlaylistImporter {
 
   _searchOnSubFoler(source, path, options, dirNameParent, finishedDirs) {
     FilePicker.browse(source, path, options).then(async (resp) => {
-      let localDirs = resp.dirs || [];
+      const localDirs = resp.dirs || [];
       // let finishedDirs = 0;
       //$('#total_playlists').html((localDirs.length));
-      let dirName = resp.target;
-      let playlistName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName));
+      const dirName = resp.target;
+      const playlistName = PlaylistImporter._convertToUserFriendly(PlaylistImporter._getBaseName(dirName));
       let dirNameCustom = dirNameParent ? dirNameParent + '_' + playlistName : playlistName;
       if (game.settings.get(PLIMP.MODULENAME, 'maintainOriginalFolderName')) {
         dirNameCustom = playlistName;
       }
-      let myPlaylists = game.playlists.contents.filter((p) => p.name === dirNameCustom) || [];
-      let myPlaylistExists = myPlaylists.length > 0 ? true : false;
+      const myPlaylists = game.playlists?.contents.filter((p) => p.name === dirNameCustom) || [];
+      const myPlaylistExists = myPlaylists.length > 0 ? true : false;
       if (myPlaylistExists) {
         dirNameCustom = dirNameCustom + '-' + myPlaylist.length;
       }
 
-      let success = await this._generatePlaylist(dirNameCustom);
+      const success = await this._generatePlaylist(dirNameCustom);
       if (this.DEBUG) console.log(`TT: ${dirName}: ${success} on creating playlists`);
       await this._getItemsFromDir(source, dirName, dirNameCustom, options);
       // $('#finished_playlists').html(++finishedDirs);
