@@ -1,42 +1,41 @@
-import CONSTANTS from "./constants";
+import CONSTANTS from './constants.js';
 
 export const registerSettings = function () {
-
   game.settings.register(CONSTANTS.MODULE_NAME, 'songs', {
-    name: `${CONSTANTS.LANG}.Songs`,
-    hint: `${CONSTANTS.LANG}.SongsHint`,
+    name: `${CONSTANTS.MODULE_NAME}.Songs`,
+    hint: `${CONSTANTS.MODULE_NAME}.SongsHint`,
     scope: 'world',
     config: false,
     default: {},
     type: Object,
   });
   game.settings.register(CONSTANTS.MODULE_NAME, 'bucket', {
-    name: `${CONSTANTS.LANG}.BucketSelect`,
-    hint: `${CONSTANTS.LANG}.BucketSelectHint`,
+    name: `${CONSTANTS.MODULE_NAME}.BucketSelect`,
+    hint: `${CONSTANTS.MODULE_NAME}.BucketSelectHint`,
     scope: 'world',
     config: true,
     default: '',
     type: String,
   });
   game.settings.register(CONSTANTS.MODULE_NAME, 'shouldRepeat', {
-    name: `${CONSTANTS.LANG}.ShouldRepeat`,
-    hint: `${CONSTANTS.LANG}.ShouldRepeatHint`,
+    name: `${CONSTANTS.MODULE_NAME}.ShouldRepeat`,
+    hint: `${CONSTANTS.MODULE_NAME}.ShouldRepeatHint`,
     scope: 'world',
     config: true,
     default: false,
     type: Boolean,
   });
   game.settings.register(CONSTANTS.MODULE_NAME, 'shouldStream', {
-    name: `${CONSTANTS.LANG}.ShouldStream`,
-    hint: `${CONSTANTS.LANG}.ShouldStreamHint`,
+    name: `${CONSTANTS.MODULE_NAME}.ShouldStream`,
+    hint: `${CONSTANTS.MODULE_NAME}.ShouldStreamHint`,
     scope: 'world',
     config: true,
     default: false,
     type: Boolean,
   });
   game.settings.register(CONSTANTS.MODULE_NAME, 'folderDir', {
-    name: `${CONSTANTS.LANG}.FolderDir`,
-    hint: `${CONSTANTS.LANG}.FolderDirHint`,
+    name: `${CONSTANTS.MODULE_NAME}.FolderDir`,
+    hint: `${CONSTANTS.MODULE_NAME}.FolderDirHint`,
     scope: 'world',
     config: true,
     default: 'music',
@@ -44,32 +43,32 @@ export const registerSettings = function () {
     filePicker: true,
   });
   game.settings.register(CONSTANTS.MODULE_NAME, 'logVolume', {
-    name: `${CONSTANTS.LANG}.LogVolume`,
-    hint: `${CONSTANTS.LANG}.LogVolumeHint`,
+    name: `${CONSTANTS.MODULE_NAME}.LogVolume`,
+    hint: `${CONSTANTS.MODULE_NAME}.LogVolumeHint`,
     scope: 'world',
     config: true,
     default: '0.5',
     type: String,
   });
   game.settings.register(CONSTANTS.MODULE_NAME, 'enableDuplicateChecking', {
-    name: `${CONSTANTS.LANG}.EnableDuplicate`,
-    hint: `${CONSTANTS.LANG}.EnableDuplicateHint`,
+    name: `${CONSTANTS.MODULE_NAME}.EnableDuplicate`,
+    hint: `${CONSTANTS.MODULE_NAME}.EnableDuplicateHint`,
     scope: 'world',
     config: true,
     default: true,
     type: Boolean,
   });
   game.settings.register(CONSTANTS.MODULE_NAME, 'customRegexDelete', {
-    name: `${CONSTANTS.LANG}.CustomRegexDelete`,
-    hint: `${CONSTANTS.LANG}.CustomRegexDeleteHint`,
+    name: `${CONSTANTS.MODULE_NAME}.CustomRegexDelete`,
+    hint: `${CONSTANTS.MODULE_NAME}.CustomRegexDeleteHint`,
     scope: 'world',
     config: true,
     default: '^\\d\\d+ *_*-* *',
     type: String,
   });
   game.settings.register(CONSTANTS.MODULE_NAME, 'shouldOverridePlaylist', {
-    name: `${CONSTANTS.LANG}.ShouldOverridePlaylist`,
-    hint: `${CONSTANTS.LANG}.ShouldOverridePlaylistHint`,
+    name: `${CONSTANTS.MODULE_NAME}.ShouldOverridePlaylist`,
+    hint: `${CONSTANTS.MODULE_NAME}.ShouldOverridePlaylistHint`,
     scope: 'world',
     config: true,
     default: false,
@@ -78,27 +77,27 @@ export const registerSettings = function () {
   let sources = new FilePicker().sources;
   let options = Object.keys(sources);
   game.settings.register(CONSTANTS.MODULE_NAME, 'source', {
-    name: game.i18n.localize(`${CONSTANTS.LANG}.SelectSource`),
-    hint: `${game.i18n.localize(`${CONSTANTS.LANG}.SelectSourceHint`)} [${options}]`,
+    name: game.i18n.localize(`${CONSTANTS.MODULE_NAME}.SelectSource`),
+    hint: `${game.i18n.localize(`${CONSTANTS.MODULE_NAME}.SelectSourceHint`)} [${options}]`,
     scope: 'world',
     config: true,
     default: 'data',
     type: String,
   });
   game.settings.register(CONSTANTS.MODULE_NAME, 'shouldDeletePlaylist', {
-    name: `${CONSTANTS.LANG}.ShouldDeletePlaylist`,
-    hint: `${CONSTANTS.LANG}.ShouldDeletePlaylistHint`,
+    name: `${CONSTANTS.MODULE_NAME}.ShouldDeletePlaylist`,
+    hint: `${CONSTANTS.MODULE_NAME}.ShouldDeletePlaylistHint`,
     scope: 'world',
     config: true,
     default: false,
     type: Boolean,
   });
   game.settings.register(CONSTANTS.MODULE_NAME, 'maintainOriginalFolderName', {
-    name: `${CONSTANTS.LANG}.MaintainOriginalFolderName`,
-    hint: `${CONSTANTS.LANG}.MaintainOriginalFolderNameHint`,
+    name: `${CONSTANTS.MODULE_NAME}.MaintainOriginalFolderName`,
+    hint: `${CONSTANTS.MODULE_NAME}.MaintainOriginalFolderNameHint`,
     scope: 'world',
     config: true,
     default: false,
     type: Boolean,
   });
-}
+};
