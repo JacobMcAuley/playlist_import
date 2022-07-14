@@ -3,7 +3,7 @@
   "name": "playlist_import",
   "title": "Playlist Importer",
   "description": "Speeds up the process of importing your sounds",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "scripts": {
     "package": "gulp package",
     "build": "gulp clean && gulp build && gulp link",

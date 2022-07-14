@@ -1,3 +1,7 @@
+## 1.7.5
+
+- Some clean up and better design pattern
+
 ## 1.7.4
 
 - Some clean up, and bug fix a typo

@@ -1,3 +1,6 @@
+import { registerSettings } from './settings.js';
+import CONSTANTS from './module/constants.js';
+
 class PlaylistImporterInitializer {
   constructor() {}
 
@@ -16,7 +19,7 @@ class PlaylistImporterInitializer {
 
     Hooks.on('renderPlaylistDirectory', (app, html, data) => {
       html.find('.directory-footer')[0].style.display = 'inherit';
-      const importPlaylistString = game.i18n.localize(`${PLIMP.LANG}.ImportButton`);
+      const importPlaylistString = game.i18n.localize(`${CONSTANTS.MODULE_NAME}.ImportButton`);
       const importButton = $(`<button  style="width: 50%;">${importPlaylistString}</button>`);
       if (game.user?.isGM || game.user?.can('SETTINGS_MODIFY')) {
         html.find('.directory-footer').append(importButton);
@@ -24,7 +27,7 @@ class PlaylistImporterInitializer {
           PLIMP.playlistImporter.playlistDirectoryInterface();
         });
       }
-      const deleteAllPlaylistString = game.i18n.localize(`${PLIMP.LANG}.DeleteAllButton`);
+      const deleteAllPlaylistString = game.i18n.localize(`${CONSTANTS.MODULE_NAME}.DeleteAllButton`);
       const deleteAllButton = $(`<button  style="width: 50%;">${deleteAllPlaylistString}</button>`);
       if (game.user?.isGM || game.user?.can('SETTINGS_MODIFY')) {
         html.find('.directory-footer').append(deleteAllButton);
@@ -81,7 +84,7 @@ class PlaylistImporterInitializer {
      * Appends a button onto the settings to clear playlist "Hashtable" memory.
      */
     Hooks.on('renderSettings', (app, html) => {
-      const clearMemoryString = game.i18n.localize(`${PLIMP.LANG}.ClearMemory`);
+      const clearMemoryString = game.i18n.localize(`${CONSTANTS.MODULE_NAME}.ClearMemory`);
       const importButton = $(`<button>${clearMemoryString}</button>`);
       // For posterity.
       if (game.user?.isGM || game.user?.can('SETTINGS_MODIFY')) {
@@ -101,21 +104,7 @@ class PlaylistImporterInitializer {
   }
 
   static _registerSettings() {
-    PlaylistImporterConfig.registerSettings();
-    // PlaylistImporterConfig.initializeConfigParams();
-    // PLIMP.PLAYLISTCONFIG.forEach((setting) => {
-    //   game.settings.register(PLIMP.MODULENAME, setting.key, setting.settings);
-    // });
-    // let sources = new FilePicker().sources;
-    // let options = Object.keys(sources);
-    // game.settings.register(PLIMP.MODULENAME, 'source', {
-    //   name: game.i18n.localize(`${PLIMP.LANG}.SelectSource`),
-    //   hint: `${game.i18n.localize(`${PLIMP.LANG}.SelectSourceHint`)} [${options}]`,
-    //   type: String,
-    //   default: 'data',
-    //   scope: 'world',
-    //   config: true,
-    // });
+    registerSettings();
   }
 }
 
@@ -359,8 +348,8 @@ class PlaylistImporter {
    */
   _playlistCompletePrompt() {
     const playlistComplete = new Dialog({
-      title: game.i18n.localize(`${PLIMP.LANG}.OperationFinishTitle`),
-      content: `<p>${game.i18n.localize(`${PLIMP.LANG}.OperationFinishContent`)}</p>`,
+      title: game.i18n.localize(`${CONSTANTS.MODULE_NAME}.OperationFinishTitle`),
+      content: `<p>${game.i18n.localize(`${CONSTANTS.MODULE_NAME}.OperationFinishContent`)}</p>`,
       buttons: {
         one: {
           icon: '<i class="fas fa-check"></i>',
@@ -404,15 +393,15 @@ class PlaylistImporter {
 
   clearMemoryInterface() {
     const clearMemoryPrompt = new Dialog({
-      title: game.i18n.localize(`${PLIMP.LANG}.ClearMemoryTitle`),
-      content: `<p>${game.i18n.localize(`${PLIMP.LANG}.ClearMemoryDescription`)}</p>`,
+      title: game.i18n.localize(`${CONSTANTS.MODULE_NAME}.ClearMemoryTitle`),
+      content: `<p>${game.i18n.localize(`${CONSTANTS.MODULE_NAME}.ClearMemoryDescription`)}</p>`,
       buttons: {
         one: {
-          label: game.i18n.localize(`${PLIMP.LANG}.ClearMemoryWarning`),
+          label: game.i18n.localize(`${CONSTANTS.MODULE_NAME}.ClearMemoryWarning`),
           callback: () => this._clearSongHistory(),
         },
         two: {
-          label: game.i18n.localize(`${PLIMP.LANG}.CancelOperation`),
+          label: game.i18n.localize(`${CONSTANTS.MODULE_NAME}.CancelOperation`),
           callback: () => console.log('Playlist-Importer: Canceled'),
         },
       },
@@ -424,12 +413,12 @@ class PlaylistImporter {
 
   playlistDirectoryInterface() {
     const playlistPrompt = new Dialog({
-      title: game.i18n.localize(`${PLIMP.LANG}.ImportMusicTitle`),
-      content: `<p>${game.i18n.localize(`${PLIMP.LANG}.ImportMusicDescription`)}</p>`,
+      title: game.i18n.localize(`${CONSTANTS.MODULE_NAME}.ImportMusicTitle`),
+      content: `<p>${game.i18n.localize(`${CONSTANTS.MODULE_NAME}.ImportMusicDescription`)}</p>`,
       buttons: {
         one: {
           icon: '<i class="fas fa-check"></i>',
-          label: game.i18n.localize(`${PLIMP.LANG}.ImportMusicLabel`),
+          label: game.i18n.localize(`${CONSTANTS.MODULE_NAME}.ImportMusicLabel`),
           callback: () => {
             this._playlistStatusPrompt();
             this.beginPlaylistImport(
@@ -440,7 +429,7 @@ class PlaylistImporter {
         },
         two: {
           icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize(`${PLIMP.LANG}.CancelOperation`),
+          label: game.i18n.localize(`${CONSTANTS.MODULE_NAME}.CancelOperation`),
           callback: () => console.log('Playlist-Importer: Canceled'),
         },
       },
